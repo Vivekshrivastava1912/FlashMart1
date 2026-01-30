@@ -5,6 +5,7 @@
  import morgan from 'morgan'
  import helmet from 'helmet'
  import connectDB from './config/connectDB.js'
+ import userRouter from './route/user.route.js'
 
  
  dotenv.config()
@@ -23,7 +24,7 @@
     crossOriginResourcePolicy : false
  }))
 
- const PORT = 8080 || process.env.PORT
+ const PORT = process.env.PORT || 8000 
     app.get('/', (request, response) => {
 
         response.json({
@@ -32,9 +33,18 @@
        
     })
 
+    app.use('/api/user', userRouter)
 // first connect database and then cannect server
 
     connectDB().then(() => {
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`)
     })})
+
+    .catch((error) => {
+        console.log('Failed to connect to database', error)
+    })
+   
+
+app.use(express.urlencoded({ extended: true }))
+    
