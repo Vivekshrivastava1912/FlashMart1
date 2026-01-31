@@ -7,7 +7,7 @@ import auth from '../middleware/auth.js';
 
 
 
-
+//------------------------------------------------all routs are define hear-----------------------------------------------------------------//
 
 
 const userRouter = Router()

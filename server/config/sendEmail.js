@@ -3,12 +3,18 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 
+// resend ki API key ko env file se le raha hai
+
 if (!process.env.RESEND_API){
     console.log("provide RESEND_API in side the env file")
 }
 
+// resend me se email bhejne ke liye Resend ka instance bana raha hai
+
+
 const resend = new Resend(process.env.RESEND_API);
 
+// sendEmail function jo email bhejne ke liye use hota hai
 
 const sendEmail = async({ sendTo, subject, html})=>{
 
@@ -29,5 +35,7 @@ const sendEmail = async({ sendTo, subject, html})=>{
     }
 }
 
+
+//end of sendEmail function
 export default sendEmail;
 

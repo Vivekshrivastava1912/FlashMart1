@@ -7,11 +7,16 @@ import generatedRefreshToken from '../utils/generatedRefreshToken.js';
 
 
 
-// registration controller hai jise user ka data database me save kar rahe hai
+// ------------------------registration controller hai jise user ka data database me save kar rahe hai-------------------------------------//
 export async function registerUserController(request, response) {
+
+    // request se age name email passward milte hai to try block chale ga ather wise catch block chale ga
 
     try {
         const { name, email, password } = request.body;
+
+
+        // request se agar name email password nahi milta hai to ye responce aye ga 
 
         if (!name || !email || !password) {
             return response.status(400).json({
@@ -21,8 +26,12 @@ export async function registerUserController(request, response) {
             })
         }
 
+        // database me cheak kar rah hai ye email pehle se hai to nahi 
+
         const user = await UserModel.findOne({ email })
 
+
+        // ager user pehle se hai to ye responce ayega 
         if (user) {
             return response.json({
                 message: "User already exists with this email.",
@@ -30,18 +39,24 @@ export async function registerUserController(request, response) {
                 success: false
             })
         }
+        // ager user nahi hai to naya user create hoga 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
+        // payload me name email or hashed password ko rkakh rahe hai 
         const payload = {
             name,
             email,
             password: hashedPassword
         }
+        //
 
         const newUser = new UserModel(payload);
         const save = await newUser.save()
+
+        //user ko email se verify karane ke liye link bana rahe hai
         const VerifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email?code=${save?._id}`
 
+        //email bhejne ke liye sendemail ka use kar rahe hai 
         const verifyemail = await sendEmail({
             sendTo: email,
             subject: "Welcome to FlashMart - Verify your email",
@@ -49,6 +64,8 @@ export async function registerUserController(request, response) {
                 name, url: VerifyEmailUrl
             })
         })
+
+        // jab email verify ho jata hai to ye responce ayega 
         return response.json({
             message: "User registered successfully. Please check your email to verify your account.",
             error: false,
@@ -67,16 +84,21 @@ export async function registerUserController(request, response) {
     }
 
 
+    // end of register user controller
+
 
 
 }
 
-//email me jo link hai use verify kar rahe hai
+//---------------------------------------------email me jo link hai use verify kar rahe hai-----------------------------------------------//
 export async function verifyEmailController(request, response) {
+
+    // email me link arahi hai usme ek code araha hai jise use karke email verify ho raha hai
     try {
-        const {code} = request.body
+        const { code } = request.body
         const user = await UserModel.findOne({ _id: code })
 
+        //ager code user se match nahi hota hai to ye responce aye ga
         if (!user) {
             return response.status(400).json({
                 message: "Invalid verification code....",
@@ -85,6 +107,7 @@ export async function verifyEmailController(request, response) {
             })
 
         }
+        //agar user ka email verify ho chuka hai to ye responce ayega 
         const updatedUser = await UserModel.updateOne({
             _id: code
         },
@@ -100,6 +123,7 @@ export async function verifyEmailController(request, response) {
     }
 
 
+    // ager erroe ata hai to ye responce aye ga 
     catch (error) {
         return response.status(500).json({
             message: error.message || error,
@@ -107,34 +131,41 @@ export async function verifyEmailController(request, response) {
             success: false
         })
     }
+    // end of verify email controller 
+
 }
 
-// email or password ke through login kar rahe hai
+// -----------------------------------------email or password ke through login kar rahe hai----------------------------------------------//
 
 export async function loginController(request, response) {
 
-
+    // try block mai email or passward le raha hai 
     try {
         const { email, password } = request.body
         const user = await UserModel.findOne({ email })
 
-       if(!email || !password){
-        return response.status(400).json({
-            message: "Email and password are required ....",
-            error: true,
-            success: false
-        })
-       }
+        // agar email ya password me se ek bhi missing hai to ye responce aye ga 
 
+        if (!email || !password) {
+            return response.status(400).json({
+                message: "Email and password are required ....",
+                error: true,
+                success: false
+            })
+        }
 
+        //ager user email se match nahi hota hai to ye responce aye ga 
 
         if (!user) {
-          return  response.status(400).json({
+            return response.status(400).json({
                 message: "User not found with this email.",
                 error: true,
                 success: false
             })
         }
+
+
+        // ager user suspende ya inactive ho to ye responce aye ga 
 
         if (user.status !== "Active") {
             return response.status(400).json({
@@ -143,8 +174,11 @@ export async function loginController(request, response) {
                 success: false
             })
         }
+
+        // passwaor to data base se match kare ga
         const checkPassword = await bcrypt.compare(password, user.password)
 
+        //ager passwoed match nahi hota to ye responece aye ga 
         if (!checkPassword) {
             return response.status(400).json({
                 message: "cheack your password."
@@ -153,25 +187,25 @@ export async function loginController(request, response) {
             })
         }
 
-const accesstoken = await generatedAccessToken(user._id)
-const refreshtoken = await generatedRefreshToken(user._id)
-const cookieOptions = {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'None'
-}
+        const accesstoken = await generatedAccessToken(user._id)
+        const refreshtoken = await generatedRefreshToken(user._id)
+        const cookieOptions = {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'None'
+        }
 
 
 
- response.cookie('accessToken', accesstoken,cookieOptions )
-  response.cookie('refreshToken', refreshtoken,cookieOptions )
+        response.cookie('accessToken', accesstoken, cookieOptions)
+        response.cookie('refreshToken', refreshtoken, cookieOptions)
 
         return response.json({
             message: "Login successful.",
             error: false,
             success: true,
             data: {
-                accesstoken ,
+                accesstoken,
                 refreshtoken
             }
         })
@@ -190,27 +224,30 @@ const cookieOptions = {
 
 }
 
-//logout controller
+//---------------------------------------------------------logout controller-----------------------------------------------------------//
 
 export async function logoutController(request, response) {
-    try{
-
-    const userId = request.userId;//midellware se araha hai
+    try {
+        // logout karne ke liye cookie jese access or refresh token ko clear kar raha hai
+        const userId = request.userId;//midellware se araha hai
         const cookieOptions = {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'None'
-}
+            httpOnly: true,
+            secure: true,
+            sameSite: 'None'
+        }
 
-     response.clearCookie('accessToken',cookieOptions),
-     response.clearCookie('refreshToken',cookieOptions)
+        // cookies ko clear kar rah hai 
 
-
-const removeRefreshToken = await UserModel.findByIdAndUpdate(userId,{
-    refreshToken: ""
-})
+        response.clearCookie('accessToken', cookieOptions),
+            response.clearCookie('refreshToken', cookieOptions)
 
 
+        const removeRefreshToken = await UserModel.findByIdAndUpdate(userId, {
+         
+              refresh_token: ""
+        })
+
+        // logout hone ke bad ye responce ayega 
 
         return response.json({
             message: "Logout successful...",
@@ -218,9 +255,11 @@ const removeRefreshToken = await UserModel.findByIdAndUpdate(userId,{
             success: true
         })
     }
-    catch(error){
+
+    // or  ager is me arar aye to ye response aye ga 
+    catch (error) {
         return response.status(500).json({
-            message: error.message || error ,
+            message: error.message || error,
             error: true,
             success: false
         })

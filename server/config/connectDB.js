@@ -3,13 +3,17 @@ import dotenv from "dotenv";
 
 dotenv.config()
 
-if(!process.env.MONGODB_URL){
+
+// mongodb ki api url ko .env file se le rahe hai
+
+if (!process.env.MONGODB_URL) {
   throw new Error(
     "Please provide MONGODB_URI in the .env file"
   );
 }
 
-async function connectDB(){
+// database se connect karne ke liye function
+async function connectDB() {
   try {
     await mongoose.connect(process.env.MONGODB_URL)
     console.log("Mongodb connected successfully")

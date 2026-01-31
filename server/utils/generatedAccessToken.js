@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import UserMOdel from "../models/user.model.js"
 
+// access token generat kar rahe hai jo 5 hours tak rahe ga 
 
 
 const generatedAccessToken = async(userId) => {

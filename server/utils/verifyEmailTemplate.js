@@ -1,6 +1,10 @@
 
 const verifyEmailTemplate = ({ name, url }) => {
-    return `
+   
+  // email ka template hai jo email to degin kar rah hai
+  
+  return `
+
 <p>Dera ${name},</p>
  <p style="font-size:15px; line-height:1.6;">
                 Thank you for creating an account with <strong>FlashMart</strong>.
