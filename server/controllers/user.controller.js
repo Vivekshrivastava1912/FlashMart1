@@ -4,6 +4,8 @@ import sendEmail from '../config/sendEmail.js';
 import verifyEmailTemplate from '../utils/verifyEmailTemplate.js';
 import generatedAccessToken from '../utils/generatedAccessToken.js';
 import generatedRefreshToken from '../utils/generatedRefreshToken.js';
+import uploadImageCloudinary from '../utils/uploadImageCloudinary.js';
+
 
 
 
@@ -263,5 +265,43 @@ export async function logoutController(request, response) {
             error: true,
             success: false
         })
+    }
+}
+
+
+//-------------------------------------------------------upload user avtar-----------------------------------------------------------------//
+
+export async function uploadAvatar(request, response) {
+    try {
+        const userId = request.userId; // Auth middleware se mila ID
+        const image = request.file; // Multer se mili image
+
+        console.log("Image received:", image?.originalname);
+
+        // 1. Cloudinary par upload karo
+        const upload = await uploadImageCloudinary(image);
+
+        // 2. Database update karo
+        await UserModel.findByIdAndUpdate(userId, {
+            avatar: upload.url
+        });
+
+        // 3. Jawab bhejo (Is line se Loop khatam hoga)
+        return response.json({
+            message: "Profile avatar uploaded successfully.",
+            success: true,
+            error: false,
+            data: {
+                _id: userId,
+                avatar: upload.url
+            }
+        });
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        });
     }
 }

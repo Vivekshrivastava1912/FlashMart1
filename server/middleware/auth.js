@@ -7,9 +7,12 @@ const auth = async (request, response, next) => {
 
 
     try {
-        const token = request.cookies.accessToken ||
-            request.headers.authorization.split(" ")[1]
-        console.log('token', token)
+        // const token = request.cookies.accessToken ||
+        //     (request.headers.authorization.split(" ")[1])
+        // console.log('token', token)
+
+const token = request.cookies.accessToken || 
+                      (request.headers.authorization && request.headers.authorization.split(" ")[1]);
         if (!token) {
             return response.status(401).json({
                 message: "Unauthorized access , no token provided"

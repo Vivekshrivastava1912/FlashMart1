@@ -1,9 +1,12 @@
-import {Router} from 'express'
-import { registerUserController } from '../controllers/user.controller.js'
+import { Router } from 'express'
+import {registerUserController} from '../controllers/user.controller.js'
 import { verifyEmailController } from '../controllers/user.controller.js'
 import { loginController } from '../controllers/user.controller.js'
 import { logoutController } from '../controllers/user.controller.js'
+import { uploadAvatar } from '../controllers/user.controller.js'
 import auth from '../middleware/auth.js';
+import upload from '../middleware/multer.js'
+
 
 
 
@@ -12,12 +15,14 @@ import auth from '../middleware/auth.js';
 
 const userRouter = Router()
 
-userRouter.post('/register',registerUserController)
+userRouter.post('/register', registerUserController)
 
-userRouter.post('/verify-email',verifyEmailController)
+userRouter.post('/verify-email', verifyEmailController)
 
-userRouter.post('/login',loginController)
+userRouter.post('/login', loginController)
 
-userRouter.get('/logout',auth,logoutController)
+userRouter.get('/logout', auth, logoutController)
+
+userRouter.put('/upload-avatar', auth, upload.single('avatar'), uploadAvatar)
 
 export default userRouter
