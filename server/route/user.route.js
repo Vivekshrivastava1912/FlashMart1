@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import {registerUserController, updateUserDetails} from '../controllers/user.controller.js'
+import {forgotPasswordController, registerUserController, updateUserDetails} from '../controllers/user.controller.js'
 import { verifyEmailController } from '../controllers/user.controller.js'
 import { loginController } from '../controllers/user.controller.js'
 import { logoutController } from '../controllers/user.controller.js'
@@ -26,5 +26,7 @@ userRouter.get('/logout', auth, logoutController)
 userRouter.put('/upload-avatar', auth, upload.single('avatar'), uploadAvatar)
 
 userRouter.put('/update-user',auth,updateUserDetails)
+
+userRouter.put('/forget-password' , forgotPasswordController)
 
 export default userRouter

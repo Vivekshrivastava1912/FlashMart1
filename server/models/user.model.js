@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
 
     refresh_token: {
         type: String,
-        defoult: ""
+        default: ""
     },
 
     verify_email: {

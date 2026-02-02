@@ -5,6 +5,8 @@ import verifyEmailTemplate from '../utils/verifyEmailTemplate.js';
 import generatedAccessToken from '../utils/generatedAccessToken.js';
 import generatedRefreshToken from '../utils/generatedRefreshToken.js';
 import uploadImageCloudinary from '../utils/uploadImageCloudinary.js';
+import generatedOtp from '../utils/generatedOtp.js';
+import forgotPasswordTemplate from '../utils/forgotPasswordTemplate.js';
 
 
 
@@ -343,4 +345,62 @@ catch (error){
         success :false
     })
 }
+}
+
+//----------------------------------------------------forgot password not login --------------------------------------------------------------------//
+
+
+export async function forgotPasswordController (request , response){
+
+    //  FORGOTPASSWORD --> SENDOTP --> VERIFYOTP --> RESETPASWWORD
+
+    try {
+           const {email} = request.body
+           const user = await UserModel.findOne({email})
+       if(!user){
+        return response.status(400).json({
+
+            message : "Email not available ....",
+            error : true ,
+            success : false
+
+        })
+       }
+
+  const otp = generatedOtp()
+
+
+    const expireTime = new Date(Date.now() + 60 * 60 * 1000 )
+    //the expire time of otp was 1 hour
+ const update = await UserModel.findByIdAndUpdate(user._id,{
+    forget_password_otp : otp ,
+    forget_password_expiry : expireTime.toISOString()
+ })
+
+await sendEmail({
+      sendTo : email ,
+      subject : "Forgot Password from FlashMart",
+      html : forgotPasswordTemplate({
+        name : user.name ,
+        otp : otp
+      })
+ })
+
+   
+return response.json({
+    message : "please Cheack your email",
+    error : false ,
+    success : true
+})
+
+
+    }
+    catch(error){
+        return response.status(500).json({
+        message : error.message || error ,
+        error : true ,
+        success : false
+        })
+    }
+
 }
