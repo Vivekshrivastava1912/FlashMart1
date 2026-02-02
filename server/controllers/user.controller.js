@@ -305,3 +305,42 @@ export async function uploadAvatar(request, response) {
         });
     }
 }
+
+//------------------------------------------------------update user details-----------------------------------------------------------------//
+
+
+export async function updateUserDetails(request ,response){
+try{
+    const userId = request.userId
+     const {name ,email ,mobile , password} = request.body
+      
+     let hashedPassword = ""
+if(password){
+          const salt = await bcrypt.genSalt(10);
+       hashedPassword = await bcrypt.hash(password, salt);
+
+}
+
+     const updateUser = await UserModel.updateOne({ _id : userId} ,{
+        ...(name && {name : name }),
+        ...(email && {email : email}),
+        ...(mobile && {mobile : mobile}),
+        ...(password && {password : hashedPassword})
+    
+     })
+  return response.json({
+    message : "updated user successfully...",
+    error :false,
+    success :true ,
+    data : updateUser
+  })
+
+}
+catch (error){
+    return response.status(500).json({
+        massage : error.massage || error ,
+        error :true ,
+        success :false
+    })
+}
+}
