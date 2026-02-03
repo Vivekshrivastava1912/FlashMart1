@@ -7,6 +7,7 @@ import generatedRefreshToken from '../utils/generatedRefreshToken.js';
 import uploadImageCloudinary from '../utils/uploadImageCloudinary.js';
 import generatedOtp from '../utils/generatedOtp.js';
 import forgotPasswordTemplate from '../utils/forgotPasswordTemplate.js';
+import jwt from 'jsonwebtoken';
 
 
 
@@ -508,26 +509,82 @@ export async function resetpassword(request, response) {
         }
 
 
-          const salt = await bcrypt.genSalt(10);
-           const  hashedPassword = await bcrypt.hash(newPassword, salt);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-       const update = await UserModel.findByIdAndUpdate(user._id,{
-        password :  hashedPassword
-       })
+        const update = await UserModel.findByIdAndUpdate(user._id, {
+            password: hashedPassword
+        })
 
-    return response.json({
-        message : "Password Updated Successfully ...",
-        error :false ,
-        success :true
-    })
+        return response.json({
+            message: "Password Updated Successfully ...",
+            error: false,
+            success: true
+        })
 
     }
     catch (error) {
 
         return response.status(500).json({
-            message: error.message|| error,
+            message: error.message || error,
             error: true,
             success: false
         })
     }
+}
+
+//-----------------------------------------------------refresh token controller -------------------------------------------------------------------------//
+export async function refreshToken(request, response) {
+
+    try {
+        const refreshToken = request.cookies.refreshToken || request?.header?.authorization?.split(" ")[1]
+        if (!refreshToken) {
+            return response.status(401).json({
+                message: "Invalid token ...",
+                error: true,
+                success: false
+            })
+        }
+
+
+        const verifyToken = await jwt.verify(refreshToken, process.env.SECRET_KEY_REFRESH_TOKEN)
+
+
+        if (!verifyToken) {
+            return response.status(401).json({
+                message: "Token is expired",
+                error: true,
+                success: false
+            })
+        }
+
+        const userId = verifyToken?._id
+        const newAccessToken = await generatedAccessToken(userId)
+        const cookieOptions = {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'None'
+        }
+        response.cookie('accessToken',newAccessToken,cookieOptions )
+
+        return response.json({
+            message : "New Access token generated...",
+            error :true ,
+            success: false ,
+            data : {
+                accessToken : newAccessToken
+            }
+        })
+
+
+    }
+
+    catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+
 }
