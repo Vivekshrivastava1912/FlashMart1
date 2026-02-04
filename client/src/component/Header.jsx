@@ -2,9 +2,19 @@ import React from 'react'
 
 const Header = () => {
   return (
-    <div>
-      me haader hu 
-    </div>
+<>
+<header>
+{/* logo */}
+  logo
+
+{/* search */}
+{/* login and yo */}
+
+
+
+</header>
+
+</>
   )
 }
 
