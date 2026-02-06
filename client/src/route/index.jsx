@@ -3,6 +3,7 @@ import App from "../App";
 import Home from "../pages/Home";
 import SearchPage from "../pages/SearchPage";
 import Login from "../pages/login";
+import Register from "../pages/Register";
 const router = createBrowserRouter([{
     path: "/",
     element: <App /> ,
@@ -23,6 +24,13 @@ children :[{
 {
       path: "login",
     element: <Login/>
+
+}
+
+,
+{
+      path: "register",
+    element: <Register/>
 
 }
 

@@ -26,7 +26,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-linear-to-br from-white via-purple-50 to-purple-200 text-gray-700 font-sans border-t-4 border-purple-600 relative overflow-visible">
+    <footer className="bg-linear-to-br from-white via-purple-50 to-purple-200 text-gray-700 font-sans border-t-2 border-purple-300 relative overflow-visible">
       
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
