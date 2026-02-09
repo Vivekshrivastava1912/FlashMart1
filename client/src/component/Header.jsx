@@ -16,11 +16,11 @@ const Header = () => {
 
   return (
     <>
-      <header className='h-20 lg:h-18 md:h-18 shadow-lg sticky top-0 z-40 bg-linear-to-r from-purple-50 to-purple-200 flex flex-col justify-center'>
+      <header className='overflow-y-auto scrollbar-hide h-25 lg:h-20 md:h-20 shadow-lg sticky top-0 z-40 bg-linear-to-r from-purple-50 to-purple-200 flex flex-col justify-center'>
 
         {/* TOP ROW: Logo and User Icon - Yeh section ab mobile search page par hide ho jayega */}
         {!(isSearchPage && isMobile) && (
-          <div className='container mx-auto flex items-center justify-between px-4 md:px-4 gap-2 md:gap-4'>
+          <div className='container mx-auto flex items-center justify-between px-4 md:px-4 py-1 pt-1 gap-2 md:gap-4'>
 
 
             {/* ye logo ka section hai */}
