@@ -16,6 +16,11 @@ const SummaryApi = {
     ForgotPassword : {
         url :'/api/user/forget-password',
         method : "put"
+    },
+
+    refreshtoken :{
+        url : "/api/user/refresh-token",
+        method : "post"
     }
 }
 

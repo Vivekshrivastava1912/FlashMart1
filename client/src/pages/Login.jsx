@@ -44,6 +44,8 @@ const Login = () => {
         // Storing token/user if needed (optional but common)
         // localStorage.setItem('token', response.data.token)
 
+       localStorage.setItem('accesstoken',response.data.data.accesstoken)
+          localStorage.setItem('refreshtoken',response.data.data.refreshtoken)
         setData({ email: "", password: "" })
         navigate("/") // Redirect to home after login
       }
