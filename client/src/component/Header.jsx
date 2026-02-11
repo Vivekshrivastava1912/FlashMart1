@@ -6,13 +6,15 @@ import { FaUserCircle } from "react-icons/fa";
 import useMobile from '../hooks/useMobile';
 import { FaShoppingCart } from "react-icons/fa";
 import login from '../pages/login';
+import { useSelector } from 'react-redux';
 
 const Header = () => {
   const [isMobile] = useMobile()
   const location = useLocation()
   const isSearchPage = location.pathname === "/Search"
+  const user = useSelector((state) => state?.user )
 
-
+console.log('user from store ' , user)
 
   return (
     <>
