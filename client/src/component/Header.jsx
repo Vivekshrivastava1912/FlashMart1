@@ -1,20 +1,46 @@
 import React from 'react'
 import logo from '../assets/logo.png'
 import Search from './Search'
-import { Link, useLocation } from 'react-router-dom';
-import { FaUserCircle } from "react-icons/fa";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { FaUserCircle, FaShoppingCart } from "react-icons/fa";
 import useMobile from '../hooks/useMobile';
-import { FaShoppingCart } from "react-icons/fa";
-import login from '../pages/login';
 import { useSelector } from 'react-redux';
 
 const Header = () => {
   const [isMobile] = useMobile()
   const location = useLocation()
   const isSearchPage = location.pathname === "/Search"
-  const user = useSelector((state) => state?.user )
+  const user = useSelector((state) => state?.user)
+  const navigate = useNavigate()
 
-console.log('user from store ' , user)
+  console.log('user from store ', user)
+
+  // Logic for Mobile User Icon Click
+  const handleMobileUser = () => {
+    // 1. Agar user Login NAHI hai to Login page par bhejo
+    if (!user?._id) {
+      navigate("/Login")
+      return
+    }
+
+    // 2. Agar user Login hai, to User Details page par bhejo (Toggle logic)
+    // PATH CHANGED: user-details -> userdetails
+    if (location.pathname.includes("userdetails")) {
+      navigate(-1) // Go back
+    } else {
+      navigate("/userdetails")
+    }
+  }
+
+  // Logic for Desktop Account Click (Sirf tab chalega jab user login ho)
+  const handleDesktopUser = () => {
+    // PATH CHANGED: user-details -> userdetails
+    if (location.pathname.includes("userdetails")) {
+      navigate(-1) // Go back
+    } else {
+      navigate("/userdetails")
+    }
+  }
 
   return (
     <>
@@ -23,7 +49,6 @@ console.log('user from store ' , user)
         {/* TOP ROW: Logo and User Icon - Yeh section ab mobile search page par hide ho jayega */}
         {!(isSearchPage && isMobile) && (
           <div className='container mx-auto flex items-center justify-between px-4 md:px-4 py-1 pt-1 gap-2 md:gap-4'>
-
 
             {/* ye logo ka section hai */}
             <div className='flex items-center shrink-0 md:pl-20'>
@@ -34,52 +59,71 @@ console.log('user from store ' , user)
               </Link>
             </div>
 
-
-
             {/* Search bar for Desktop only */}
             <div className='hidden lg:flex flex-1 max-w-lg'>
               <Search />
             </div>
 
-
-
             {/* ye login or card botton ka section hai for desktop */}
             <div className='hidden md:flex items-center gap-5 shrink-0'>
-              
-              {/* login button */}
-              <Link
-                to={"Login"}
-                className="relative px-3 py-1.5 bg-purple-500 text-white font-black  uppercase rounded-md
-             transition-all duration-300 
-             hover:bg-purple-500  group inline-block text-center"
-                onClick={(e) => {
-                  e.preventDefault(); // Turant redirect hone se rokta hai
-                  const target = e.currentTarget;
-                  const destination = target.getAttribute('href');
 
-                  // Intense Shaking Animation
-                  target.style.animation = "superShake 1s cubic-bezier(.36,.07,.19,.97) both";
-
-                  // 2 second baad redirect
-                  setTimeout(() => {
-                    window.location.href = destination;
-                  }, 800);
-                }}
-              >
-                <div className="relative inline-block">
-                  Login
-                  {/* Animated Underline */}
-                  <div className="absolute left-0 w-0 h-1 bg-purple-50 transition-all duration-500 group-hover:w-full"></div>
+              {/* Login / Account Section */}
+              {user?._id ? (
+                // SCENARIO 1: USER IS LOGGED IN -> Show "Account" Button (New Design)
+                <div 
+                  onClick={handleDesktopUser} 
+                  className='group flex items-center gap-2 cursor-pointer select-none 
+                             bg-white border border-purple-200 text-purple-700 px-4 py-2 rounded-xl
+                             shadow-sm hover:shadow-md hover:bg-purple-50 
+                             transition-all duration-300 transform hover:scale-105 active:scale-95'
+                >
+                  {/* Icon with animation */}
+                  <div className='text-purple-500 group-hover:text-purple-700 transition-colors duration-300 group-hover:rotate-12'>
+                    <FaUserCircle size={22} />
+                  </div>
+                  
+                  <p className='font-bold text-sm tracking-wide'>Account</p>
+                  
+                  {/* Small arrow/dot indicator (Optional decoration) */}
+                 
                 </div>
+              ) : (
+                // SCENARIO 2: USER IS LOGGED OUT -> Show "Login" Button (Jaisa pehle tha)
+                <Link
+                  to={"Login"}
+                  className="relative px-3 py-1.5 bg-purple-500 text-white font-black uppercase rounded-md
+                 transition-all duration-300 
+                 hover:bg-purple-500  group inline-block text-center"
+                  onClick={(e) => {
+                    e.preventDefault(); // Turant redirect hone se rokta hai
+                    const target = e.currentTarget;
+                    const destination = target.getAttribute('href');
 
-                <style>{`
-    @keyframes superShake {
-      0%, 100% { transform: translateX(0); }
-      10%, 30%, 50%, 70%, 90% { transform: translateX(-10px) rotate(-3deg); }
-      20%, 40%, 60%, 80% { transform: translateX(10px) rotate(3deg); }
-    }
-  `}</style>
-              </Link>
+                    // Intense Shaking Animation
+                    target.style.animation = "superShake 1s cubic-bezier(.36,.07,.19,.97) both";
+
+                    // 2 second baad redirect
+                    setTimeout(() => {
+                      window.location.href = destination;
+                    }, 800);
+                  }}
+                >
+                  <div className="relative inline-block">
+                    Login
+                    {/* Animated Underline */}
+                    <div className="absolute left-0 w-0 h-1 bg-purple-50 transition-all duration-500 group-hover:w-full"></div>
+                  </div>
+
+                  <style>{`
+                  @keyframes superShake {
+                    0%, 100% { transform: translateX(0); }
+                    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px) rotate(-3deg); }
+                    20%, 40%, 60%, 80% { transform: translateX(10px) rotate(3deg); }
+                  }
+                `}</style>
+                </Link>
+              )}
+
 
               {/* ye card or item ala botton */}
               <button className="flex items-center gap-3 bg-purple-500 text-white px-2 py-0.5 rounded-md hover:bg-green-600 transition-all duration-300 shadow-md group active:scale-95">
@@ -102,22 +146,19 @@ console.log('user from store ' , user)
               </button>
             </div>
 
-
-
-
             {/* user icon only displayin mobile version */}
-            <div className='lg:hidden flex items-center shrink-0 cursor-pointer'>
+            <div 
+              className='lg:hidden flex items-center shrink-0 cursor-pointer' 
+              onClick={handleMobileUser} // Click logic handles Login vs UserDetails
+            >
               <div className='text-purple-500 transition-all duration-300 ease-in-out
-                              hover:text-purple-500 hover:scale-110 hover:-rotate-12 
-                              active:scale-95'>
+                            hover:text-purple-500 hover:scale-110 hover:-rotate-12 
+                            active:scale-95'>
                 <FaUserCircle size={30} />
               </div>
             </div>
           </div>
         )}
-
-
-
 
         {/* BOTTOM ROW: Search bar for Mobile only */}
         <div className='lg:hidden mt-2 ml-2 mr-2'>

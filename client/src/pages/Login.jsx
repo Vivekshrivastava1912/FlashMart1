@@ -41,13 +41,15 @@ const Login = () => {
       if (response.data.success) {
         toast.success(response.data.message)
         
-        // Storing token/user if needed (optional but common)
-        // localStorage.setItem('token', response.data.token)
-
-       localStorage.setItem('accesstoken',response.data.data.accesstoken)
-          localStorage.setItem('refreshtoken',response.data.data.refreshtoken)
+        // Storing token/user
+        localStorage.setItem('accesstoken',response.data.data.accesstoken)
+        localStorage.setItem('refreshtoken',response.data.data.refreshtoken)
         setData({ email: "", password: "" })
-        navigate("/") // Redirect to home after login
+        
+        // --- CHANGE MADE HERE ---
+        // navigate("/") ko hata kar window.location.href lagaya hai
+        // Taki page reload ho aur Header update ho jaye
+        window.location.href = "/" 
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong")

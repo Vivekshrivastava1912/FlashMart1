@@ -7,6 +7,7 @@ import Register from "../pages/Register";
 import ForgotPassword from "../pages/ForgotPassword";
 import VerifyOtp from "../pages/VerifyOtp";
 import ResetPassword from "../pages/ResetPassword";
+import UserDetails from "../component/userDetails";
 
 
 
@@ -57,7 +58,12 @@ children :[{
       path: "resetpassword",
     element: <ResetPassword/>
 
+},
+{
+  path : "userdetails" ,
+  element : <UserDetails/>
 }
+
 
 
 
