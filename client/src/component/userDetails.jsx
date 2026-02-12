@@ -4,7 +4,7 @@ import axios from 'axios';
 import { 
     FaEnvelope, FaPhone, FaCalendarAlt, FaSignOutAlt, 
     FaShoppingBag, FaMapMarkerAlt, FaEdit, FaTimes, 
-    FaCheckCircle, FaUserCircle
+    FaCheckCircle, FaExclamationCircle, FaShieldAlt
 } from "react-icons/fa";
 import { toast } from 'react-hot-toast'; 
 
@@ -20,7 +20,6 @@ const UserDetails = () => {
                 const response = await axios.get("http://localhost:8000/api/user/user-details", {
                     withCredentials: true 
                 });
-
                 if (response.data.success) {
                     setUserData(response.data.data);
                 }
@@ -38,7 +37,6 @@ const UserDetails = () => {
         fetchUserDetails();
     }, []);
 
-    // 2. Handle Logout Logic
     const handleLogout = async () => {
         try {
             const response = await axios.get("http://localhost:8000/api/user/logout", {
@@ -58,114 +56,184 @@ const UserDetails = () => {
 
     const handleClose = () => { navigate(-1); }
 
+    const getPrimaryAddress = () => {
+        if (user?.address_detail && user.address_detail.length > 0) {
+            const addr = user.address_detail[0];
+            return addr.address || addr.city || addr.state || "View Saved Addresses";
+        }
+        return "No Address Added";
+    };
+
     if (!user) return null;
 
     return (
-        // SCREEN OVERLAY
+        // OVERLAY - UPDATED BLUR AND BG COLOR
         <div 
-            className="fixed inset-0 z-50 flex items-start justify-end bg-black/5 backdrop-blur-[1px]"
+            className="fixed inset-0 z-50 bg-slate-900/20 backdrop-blur-md animate-fade-in-smooth"
             onClick={handleClose}
         >
-            {/* COMPACT PREMIUM CARD */}
+            {/* COMPACT CARD - UPDATED POSITION (top-20) */}
             <div 
-                className="absolute top-16 right-4 w-22rem bg-white rounded-2xl shadow-2xl border border-purple-100 overflow-hidden animate-pop-in"
+                className="absolute right-4 top-20 w-84 bg-white rounded-2xl shadow-2xl border border-white/40 animate-spring-entry group/card origin-top-right"
                 onClick={(e) => e.stopPropagation()} 
+                style={{ boxShadow: '0 10px 40px -5px rgba(100, 50, 200, 0.25)' }}
             >
-                {/* 1. COMPACT HEADER */}
-                <div className="bg-linear-to-br from-purple-400 to-purple-600 p-4 relative">
+                {/* --- COMPACT HEADER --- */}
+                <div className="relative p-4 bg-linear-to-br from-purple-400 via-purple-800 to-purple-400 text-center rounded-t-2xl">
+                    
+                    {/* Noise & Gradient Overlay */}
+                    <div className="absolute inset-0  opacity-20"></div>
+                    
+                    {/* Close Button */}
                     <button 
                         onClick={handleClose}
-                        className="absolute top-2 right-2 text-white/50 hover:text-white p-1"
+                        className="absolute top-2 right-2 text-white/70 hover:text-white bg-black/10 hover:bg-black/20 p-1 rounded-full transition-all z-20"
                     >
-                        <FaTimes size={14} />
+                        <FaTimes size={10} />
                     </button>
 
-                    <div className="flex items-center gap-3">
-                        {/* Avatar */}
-                        <div className="relative shrink-0">
+                    <div className="relative z-10 flex flex-col items-center">
+                        {/* Avatar (Compact Size: w-16) */}
+                        <div className="relative mb-2 group-hover/card:scale-105 transition-transform duration-300">
+                            <div className="absolute inset-0 bg-white rounded-full blur-sm opacity-40 animate-pulse"></div>
                             <img 
-                                src={user.avatar || "https://via.placeholder.com/150"} 
+                                src={user.avatar} 
                                 alt={user.name} 
-                                className="w-14 h-14 rounded-full border-2 border-white/50 object-cover shadow-md"
+                                className="w-16 h-16 rounded-full border-[3px] border-white/40 shadow-lg object-cover relative z-10 bg-white"
                             />
-                            <div className={`absolute bottom-0 right-0 w-3 h-3 border-2 border-white rounded-full ${user.status === "Active" ? "bg-green-400" : "bg-red-400"}`}></div>
+                            <span className="absolute bottom-0 right-0 w-4 h-4 bg-white rounded-full flex items-center justify-center z-20">
+                                <span className={`w-2.5 h-2.5 rounded-full ${user.status === "Active" ? "bg-green-500" : "bg-red-500"}`}></span>
+                            </span>
                         </div>
 
-                        {/* Basic Info */}
-                        <div className="overflow-hidden">
-                            <h2 className="text-white font-bold text-base truncate capitalize">{user.name}</h2>
-                            <p className="text-purple-200 text-[10px] uppercase font-bold tracking-widest">{user.role}</p>
-                            {user.verify_email && (
-                                <div className="flex items-center gap-1 mt-0.5 text-[9px] text-blue-100 font-medium">
-                                    <FaCheckCircle /> Verified Account
-                                </div>
-                            )}
+                        <div className="animate-slide-up-fade" style={{ animationDelay: '0.1s' }}>
+                            <h2 className="text-white font-bold text-lg leading-tight capitalize">{user.name}</h2>
+                            <p className="text-purple-100 text-[10px] uppercase font-bold tracking-widest mt-0.5 opacity-80">{user.role}</p>
                         </div>
                     </div>
                 </div>
 
-                {/* 2. DASHBOARD STATS (Tight Layout) */}
-                <div className="p-3 grid grid-cols-3 gap-2 bg-purple-50/30">
-                    <CompactStat icon={<FaShoppingBag />} value={user.orderHistory?.length || 0} label="Orders" color="text-purple-600" />
-                    <CompactStat icon={<FaShoppingBag />} value={user.shopping_card?.length || 0} label="Cart" color="text-indigo-600" />
-                    <CompactStat icon={<FaMapMarkerAlt />} value={user.address_detail?.length || 0} label="Saved" color="text-rose-500" />
-                </div>
-
-                {/* 3. DETAILS LIST (No Scroll) */}
-                <div className="p-4 space-y-3">
-                    <h3 className="text-[9px] font-black text-gray-400 uppercase tracking-widest border-b pb-1">Information</h3>
+                {/* --- CONTENT (Tighter Spacing) --- */}
+                <div className="p-4 bg-white rounded-b-2xl">
                     
-                    <div className="space-y-3">
-                        <SmallRow icon={<FaEnvelope />} label="Email" value={user.email} />
-                        <SmallRow icon={<FaPhone />} label="Phone" value={user.mobile || "N/A"} />
-                        <SmallRow icon={<FaCalendarAlt />} label="Last Login" value={user.last_login_date ? new Date(user.last_login_date).toLocaleDateString() : "Today"} />
+                    {/* STATS (Compact Padding) */}
+                    <div className="grid grid-cols-3 gap-2 mb-4">
+                        <StatBox icon={<FaShoppingBag/>} value={user.orderHistory?.length || 0} label="Orders" color="text-violet-600" delay="0.1s" />
+                        <StatBox icon={<FaShoppingBag/>} value={user.shopping_card?.length || 0} label="Cart" color="text-fuchsia-600" delay="0.2s" />
+                        <StatBox icon={<FaMapMarkerAlt/>} value={user.address_detail?.length || 0} label="Saved" color="text-pink-500" delay="0.3s" />
                     </div>
-                </div>
 
-                {/* 4. ACTION BUTTONS */}
-                <div className="p-4 pt-0 flex gap-2">
-                    <button 
-                        onClick={() => toast.success("Feature Coming Soon!")}
-                        className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-bold text-xs transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
-                    >
-                        <FaEdit size={12}/> Edit
-                    </button>
-                    <button 
-                        onClick={handleLogout}
-                        className="flex-1 bg-white border border-red-100 text-red-500 hover:bg-red-50 py-2 rounded-lg font-bold text-xs transition-all active:scale-95 flex items-center justify-center gap-2"
-                    >
-                        <FaSignOutAlt size={12}/> Logout
-                    </button>
+                    {/* INFO LIST */}
+                    <div className="space-y-1 mb-4">
+                        
+                        {/* Email Row */}
+                        <InfoRow 
+                            icon={<FaEnvelope />} 
+                            delay="0.4s"
+                            content={
+                                <div className="flex items-center justify-between w-full">
+                                    <span className="text-gray-700 font-semibold text-xs truncate w-32" title={user.email}>{user.email}</span>
+                                    {user.verify_email ? (
+                                        <FaCheckCircle className="text-emerald-500" size={12} title="Verified"/>
+                                    ) : (
+                                        <button onClick={() => navigate('/verify-email')} className="text-[9px] font-bold text-white bg-red-500 hover:bg-red-600 px-2 py-0.5 rounded-full animate-pulse">
+                                            VERIFY
+                                        </button>
+                                    )}
+                                </div>
+                            }
+                        />
+
+                        {/* Phone Row */}
+                        <InfoRow 
+                            icon={<FaPhone />} 
+                            content={<span className="text-gray-700 font-semibold text-xs">{user.mobile || "N/A"}</span>}
+                            delay="0.5s" 
+                        />
+
+                        {/* Address Row */}
+                        <InfoRow 
+                            icon={<FaMapMarkerAlt />} 
+                            content={<span className="text-gray-700 font-semibold text-xs truncate w-48">{getPrimaryAddress()}</span>}
+                            delay="0.6s" 
+                        />
+
+                        {/* Login Row */}
+                        <InfoRow 
+                            icon={<FaCalendarAlt />} 
+                            content={<span className="text-gray-500 font-medium text-[10px]">Last: {user.last_login_date ? new Date(user.last_login_date).toLocaleDateString() : "Today"}</span>}
+                            delay="0.7s" 
+                        />
+                    </div>
+
+                    {/* ACTIONS (Compact Buttons) */}
+                    <div className="flex gap-2 opacity-0 animate-slide-up-fade" style={{ animationDelay: '0.8s', animationFillMode: 'forwards' }}>
+                       <button 
+    onClick={() => navigate('/userdetailupdate')}
+    className="flex-1 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 py-2 rounded-xl font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 hover:-translate-y-0.5"
+>
+    <FaEdit size={10} /> EDIT
+</button>
+
+                        <button 
+                            onClick={handleLogout}
+                            className="flex-1 bg-linear-to-r from-violet-600 to-fuchsia-600 text-white py-2 rounded-xl font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 hover:shadow-lg hover:shadow-violet-200 hover:-translate-y-0.5"
+                        >
+                            <FaSignOutAlt size={10} /> LOGOUT
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <style>{`
-                @keyframes pop-in {
-                    0% { opacity: 0; transform: translateY(-10px) scale(0.95); }
-                    100% { opacity: 1; transform: translateY(0) scale(1); }
+                @keyframes springEntry {
+                    0% { opacity: 0; transform: scale(0.9) translateY(-10px); }
+                    60% { opacity: 1; transform: scale(1.02) translateY(5px); }
+                    100% { opacity: 1; transform: scale(1) translateY(0); }
                 }
-                .animate-pop-in { animation: pop-in 0.2s ease-out forwards; }
+                .animate-spring-entry { animation: springEntry 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+                @keyframes slideRightFade {
+                    from { opacity: 0; transform: translateX(-10px); }
+                    to { opacity: 1; transform: translateX(0); }
+                }
+                .animate-slide-right { animation: slideRightFade 0.3s ease-out forwards; }
+                
+                @keyframes slideUpFade {
+                    from { opacity: 0; transform: translateY(5px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-slide-up-fade { animation: slideUpFade 0.4s ease-out forwards; }
+                .animate-fade-in-smooth { animation: fadeIn 0.3s ease-out forwards; }
+                @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
             `}</style>
         </div>
     );
 }
 
-// --- Ultra Compact Helpers ---
+// --- SUB-COMPONENTS (Compact Versions) ---
 
-const CompactStat = ({ icon, value, label, color }) => (
-    <div className="bg-white p-2 rounded-xl flex flex-col items-center shadow-sm border border-purple-100">
-        <div className={`${color} text-sm mb-0.5`}>{icon}</div>
-        <span className="font-black text-gray-800 text-sm leading-tight">{value}</span>
+const StatBox = ({ icon, value, label, color, delay }) => (
+    <div 
+        className="bg-gray-50 border border-gray-100 rounded-xl p-2 flex flex-col items-center justify-center transition-all hover:bg-white hover:shadow-md hover:border-violet-100 hover:-translate-y-0.5 group opacity-0 animate-slide-up-fade"
+        style={{ animationDelay: delay }}
+    >
+        <div className={`${color} text-xs mb-0.5`}>{icon}</div>
+        <span className="font-bold text-gray-800 text-xs">{value}</span>
         <span className="text-[8px] text-gray-400 font-bold uppercase">{label}</span>
     </div>
 );
 
-const SmallRow = ({ icon, label, value }) => (
-    <div className="flex items-center gap-3">
-        <div className="text-purple-400 shrink-0">{React.cloneElement(icon, { size: 12 })}</div>
-        <div className="overflow-hidden">
-            <p className="text-[8px] text-gray-400 font-bold uppercase leading-none mb-0.5">{label}</p>
-            <p className="text-xs font-semibold text-gray-700 truncate w-60" title={value}>{value}</p>
+const InfoRow = ({ icon, content, delay }) => (
+    <div 
+        className="flex items-center gap-3 p-1.5 rounded-lg hover:bg-gray-50 transition-colors opacity-0 animate-slide-right cursor-default"
+        style={{ animationDelay: delay }}
+    >
+        <div className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 shadow-sm border border-gray-100">
+            {React.cloneElement(icon, { size: 10 })}
+        </div>
+        <div className="flex flex-col flex-1 overflow-hidden">
+            {content}
         </div>
     </div>
 );
