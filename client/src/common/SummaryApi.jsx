@@ -25,6 +25,16 @@ const SummaryApi = {
     userDetails : {
         url : "/api/user/user-details" ,
         method : "get"
+    },
+    addCategory : {
+        url : '/api/category/add-category',
+        method : "post"
+
+    },
+
+    uploadeImage :{
+        url : '/api/file/upload',
+        method : "post"
     }
 }
 

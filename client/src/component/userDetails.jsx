@@ -136,7 +136,7 @@ const UserDetails = () => {
                                     {user.verify_email ? (
                                         <FaCheckCircle className="text-emerald-500" size={12} title="Verified"/>
                                     ) : (
-                                        <button onClick={() => navigate('/verify-email')} className="text-[9px] font-bold text-white bg-red-500 hover:bg-red-600 px-2 py-0.5 rounded-full animate-pulse">
+                                        <button onClick={() => navigate('/verifyotp')} className="text-[9px] font-bold text-white bg-red-500 hover:bg-red-600 px-2 py-0.5 rounded-full animate-pulse">
                                             VERIFY
                                         </button>
                                     )}

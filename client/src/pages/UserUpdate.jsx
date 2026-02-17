@@ -4,12 +4,19 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { 
     FaUserEdit, FaCamera, FaBoxOpen, FaMapMarkedAlt, 
-    FaSave, FaCloudUploadAlt, FaSpinner, FaTimes, FaShoppingCart, FaArrowLeft 
+    FaSave, FaCloudUploadAlt, FaSpinner, FaTimes, FaShoppingCart, FaArrowLeft,
+    FaBox, FaListAlt, FaPlusSquare, FaTags, FaUserShield // Admin Icons
 } from "react-icons/fa";
 
 // --- IMPORTS ---
 import MyOrder from './MyOrder'; 
 import MyCard from './MyCard'; 
+
+// --- ADMIN IMPORTS (Ensure these files exist) ---
+import Product from './Product'; 
+import CategoryPage from './CategoryPage';
+import UploadProduct from './UploadProduct';
+import SubCategoryPage from './SubCategoryPage';
 
 const UserUpdate = () => {
     const navigate = useNavigate();
@@ -20,7 +27,8 @@ const UserUpdate = () => {
     // --- STATES ---
     const [avatarFile, setAvatarFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState("https://via.placeholder.com/150");
-    const [userData, setUserData] = useState({ name: "", email: "", mobile: "" });
+    // Added 'role' to userData state
+    const [userData, setUserData] = useState({ name: "", email: "", mobile: "", role: "" });
     const [addressData, setAddressData] = useState({ flat: "", street: "", city: "", state: "", pin: "", mobile: "" });
 
     // --- FETCH DATA ---
@@ -30,7 +38,14 @@ const UserUpdate = () => {
                 const response = await axios.get("http://localhost:8000/api/user/user-details", { withCredentials: true });
                 if (response.data.success) {
                     const user = response.data.data;
-                    setUserData({ name: user.name || "", email: user.email || "", mobile: user.mobile || "" });
+                    // Storing role here
+                    setUserData({ 
+                        name: user.name || "", 
+                        email: user.email || "", 
+                        mobile: user.mobile || "", 
+                        role: user.role || "GENERAL" 
+                    });
+                    
                     if (user.avatar) setPreviewUrl(user.avatar);
                     if (user.address_detail?.length > 0) {
                         const savedAddr = user.address_detail[0];
@@ -104,9 +119,7 @@ const UserUpdate = () => {
             
             <div className="bg-gray-50 md:bg-white w-full h-full md:max-w-5xl md:h-[85vh] md:rounded-3xl shadow-none md:shadow-2xl flex flex-col md:flex-row overflow-hidden relative animate-pop-in md:border md:border-white/60 md:ring-1 md:ring-black/5">
                 
-                {/* --- CLOSE BUTTON --- 
-                    (Mobile: HIDDEN) | (Desktop: VISIBLE) 
-                */}
+                {/* --- CLOSE BUTTON (Desktop Only) --- */}
                 <button onClick={() => navigate(-1)} 
                     className="
                         hidden md:block 
@@ -126,9 +139,9 @@ const UserUpdate = () => {
                         onClick={() => navigate(-1)}
                         className="
                             md:hidden sticky left-0 z-50 
-                           backdrop-blur-sm 
+                            backdrop-blur-sm 
                             p-2.5 mr-2 rounded-full 
-                            text-gray-100  bg-purple-600 
+                            text-gray-100 bg-purple-600 
                             shadow-[2px_0_8px_-2px_rgba(0,0,0,0.1)] border border-gray-100
                         "
                     >
@@ -138,17 +151,32 @@ const UserUpdate = () => {
                     <h2 className="hidden md:block text-xl font-bold text-purple-500 mb-8 pl-3 tracking-tight">Settings</h2>
                     
                     <div className="flex md:flex-col gap-2 md:w-full">
+                        {/* Standard User Options */}
                         {renderSidebarItem('avatar', 'Avatar', <FaCamera />)}
                         {renderSidebarItem('details', 'Profile', <FaUserEdit />)}
                         {renderSidebarItem('address', 'Address', <FaMapMarkedAlt />)}
                         {renderSidebarItem('orders', 'Orders', <FaBoxOpen />)}
                         {renderSidebarItem('mycard', 'Card', <FaShoppingCart />)}
+
+                        {/* --- ADMIN ONLY OPTIONS --- */}
+                        {userData.role === 'ADMIN' && (
+                            <>
+                                <div className="hidden md:block my-2 border-t border-gray-200 mx-2"></div>
+                                <h3 className="hidden md:block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-4 ml-4">Admin Panel</h3>
+                                
+                                {renderSidebarItem('product', 'Products', <FaBox />)}
+                                {renderSidebarItem('categorypage', 'Categories', <FaListAlt />)}
+                                {renderSidebarItem('uploadproduct', 'Upload', <FaCloudUploadAlt />)}
+                                {renderSidebarItem('subcategorypage', 'Sub Category', <FaTags />)}
+                            </>
+                        )}
                     </div>
                 </div>
 
                 {/* --- CONTENT AREA --- */}
                 <div className="w-full md:w-3/4 bg-gray-50 md:bg-purple-200 h-full overflow-y-auto p-4 md:p-8 relative scroll-smooth pb-20 md:pb-8">
                     
+                    {/* --- TAB: AVATAR --- */}
                     {activeTab === 'avatar' && (
                         <div className="max-w-sm mx-auto mt-2 md:mt-6 text-center animate-fade-in">
                             <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-8 mt-4 md:mt-0">Update Picture</h3>
@@ -164,6 +192,7 @@ const UserUpdate = () => {
                         </div>
                     )}
 
+                    {/* --- TAB: DETAILS --- */}
                     {activeTab === 'details' && (
                         <div className="max-w-md mx-auto mt-2 md:mt-6 animate-fade-in">
                             <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-8 mt-4 md:mt-0">Edit Profile</h3>
@@ -176,6 +205,7 @@ const UserUpdate = () => {
                         </div>
                     )}
 
+                    {/* --- TAB: ADDRESS --- */}
                     {activeTab === 'address' && (
                         <div className="max-w-xl mx-auto mt-2 md:mt-4 animate-fade-in">
                             <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-8 mt-4 md:mt-0">Delivery Address</h3>
@@ -193,6 +223,7 @@ const UserUpdate = () => {
                         </div>
                     )}
 
+                    {/* --- TAB: ORDERS --- */}
                     {activeTab === 'orders' && (
                         <div className="h-full w-full animate-fade-in">
                             <div className="flex items-center justify-between mb-4 md:mb-6 sticky top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
@@ -204,6 +235,7 @@ const UserUpdate = () => {
                         </div>
                     )}
 
+                    {/* --- TAB: MY CARD --- */}
                     {activeTab === 'mycard' && (
                         <div className="h-full w-full animate-fade-in">
                             <div className="flex items-center justify-between mb-4 md:mb-6 sticky top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
@@ -211,6 +243,58 @@ const UserUpdate = () => {
                             </div>
                             <div className="pb-8">
                                 <MyCard />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ==================================================== */}
+                    {/* ADMIN CONTENT SECTIONS                  */}
+                    {/* ==================================================== */}
+
+                    {/* --- ADMIN TAB: PRODUCT --- */}
+                    {activeTab === 'product' && userData.role === 'ADMIN' && (
+                        <div className="h-full w-full animate-fade-in">
+                            <div className="flex items-center justify-between mb-4 md:mb-6 sticky top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
+                                <h3 className="text-xl md:text-2xl font-bold text-gray-800">Manage Products</h3>
+                            </div>
+                            <div className="pb-8">
+                                <Product />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --- ADMIN TAB: CATEGORY PAGE --- */}
+                    {activeTab === 'categorypage' && userData.role === 'ADMIN' && (
+                        <div className="h-full w-full animate-fade-in">
+                            <div className="flex items-center justify-between mb-2 md:mb-6 sticky top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
+                                <h3 className="text-xl md:text-2xl font-bold text-gray-800">Manage Categories</h3>
+                            </div>
+                            <div className="pb-8">
+                                <CategoryPage />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --- ADMIN TAB: UPLOAD PRODUCT --- */}
+                    {activeTab === 'uploadproduct' && userData.role === 'ADMIN' && (
+                        <div className="h-full w-full animate-fade-in">
+                            <div className="flex items-center justify-between mb-4 md:mb-6 sticky top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
+                                <h3 className="text-xl md:text-2xl font-bold text-gray-800">Upload Product</h3>
+                            </div>
+                            <div className="pb-8">
+                                <UploadProduct />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --- ADMIN TAB: SUB CATEGORY PAGE --- */}
+                    {activeTab === 'subcategorypage' && userData.role === 'ADMIN' && (
+                        <div className="h-full w-full animate-fade-in">
+                            <div className="flex items-center justify-between mb-4 md:mb-6 sticky top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
+                                <h3 className="text-xl md:text-2xl font-bold text-gray-800">Sub Categories</h3>
+                            </div>
+                            <div className="pb-8">
+                                <SubCategoryPage />
                             </div>
                         </div>
                     )}
