@@ -222,3 +222,4 @@ const LocationCard = ({ onExpand }) => {
 };
 
 export default Footer;
+
