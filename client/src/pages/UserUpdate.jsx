@@ -115,7 +115,7 @@ const UserUpdate = () => {
     if (pageLoading) return <div className="fixed inset-0 flex items-center justify-center z-50"><FaSpinner className="animate-spin text-purple-600 text-3xl" /></div>;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white md:p-4 md:bg-black/30 md:backdrop-blur-[1px]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white md:p-4 md:bg-black/30 md:backdrop-blur-[1px] no-scrollbar overflow-y-auto">
             
             <div className="bg-gray-50 md:bg-white w-full h-full md:max-w-5xl md:h-[85vh] md:rounded-3xl shadow-none md:shadow-2xl flex flex-col md:flex-row overflow-hidden relative animate-pop-in md:border md:border-white/60 md:ring-1 md:ring-black/5">
                 
@@ -174,7 +174,8 @@ const UserUpdate = () => {
                 </div>
 
                 {/* --- CONTENT AREA --- */}
-                <div className="w-full md:w-3/4 bg-gray-50 md:bg-purple-200 h-full overflow-y-auto p-4 md:p-8 relative scroll-smooth pb-20 md:pb-8">
+                {/* YAHAN NO-SCROLLBAR ADD KIYA HAI */}
+                <div className="w-full md:w-3/4 bg-gray-50 md:bg-purple-200 h-full overflow-y-auto p-4 md:p-8 relative scroll-smooth pb-20 md:pb-8 no-scrollbar">
                     
                     {/* --- TAB: AVATAR --- */}
                     {activeTab === 'avatar' && (
@@ -238,7 +239,7 @@ const UserUpdate = () => {
                     {/* --- TAB: MY CARD --- */}
                     {activeTab === 'mycard' && (
                         <div className="h-full w-full animate-fade-in">
-                            <div className="flex items-center justify-between mb-4 md:mb-6 sticky top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
+                            <div className=" rounded-2xl flex items-center justify-between mb-4 md:mb-6 sticky top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
                                 <h3 className="text-xl md:text-2xl font-bold text-gray-800">My Card</h3>
                             </div>
                             <div className="pb-8">
@@ -266,8 +267,8 @@ const UserUpdate = () => {
                     {/* --- ADMIN TAB: CATEGORY PAGE --- */}
                     {activeTab === 'categorypage' && userData.role === 'ADMIN' && (
                         <div className="h-full w-full animate-fade-in">
-                            <div className="flex items-center justify-between mb-2 md:mb-6 sticky top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
-                                <h3 className="text-xl md:text-2xl font-bold text-gray-800">Manage Categories</h3>
+                            <div className="rounded-2xl flex items-center justify-between mb-2 md:mb-6  top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
+                                <h3 className="text-xl md:text-3xl font-bold text-gray-800">Manage Categories</h3>
                             </div>
                             <div className="pb-8">
                                 <CategoryPage />
@@ -290,7 +291,7 @@ const UserUpdate = () => {
                     {/* --- ADMIN TAB: SUB CATEGORY PAGE --- */}
                     {activeTab === 'subcategorypage' && userData.role === 'ADMIN' && (
                         <div className="h-full w-full animate-fade-in">
-                            <div className="flex items-center justify-between mb-4 md:mb-6 sticky top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
+                            <div className="flex items-center justify-between mb-4 md:mb-6  top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
                                 <h3 className="text-xl md:text-2xl font-bold text-gray-800">Sub Categories</h3>
                             </div>
                             <div className="pb-8">

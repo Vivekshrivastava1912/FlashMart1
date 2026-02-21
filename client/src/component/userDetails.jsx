@@ -69,7 +69,7 @@ const UserDetails = () => {
     return (
         // OVERLAY - UPDATED BLUR AND BG COLOR
         <div 
-            className="fixed inset-0 z-50 bg-slate-900/20 backdrop-blur-md animate-fade-in-smooth"
+            className="fixed inset-0 z-50 bg-slate-900/20 backdrop-blur-md animate-fade-in-smooth scrollbar-hidden overflow-y-auto"
             onClick={handleClose}
         >
             {/* COMPACT CARD - UPDATED POSITION (top-20) */}

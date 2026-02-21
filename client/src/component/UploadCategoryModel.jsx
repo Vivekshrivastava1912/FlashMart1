@@ -4,7 +4,7 @@ import SummaryApi from '../common/SummaryApi'
 import toast from 'react-hot-toast'
 import Axios from '../utils/Axios'
 
-const UploadCategoryModel = ({ close }) => {
+const UploadCategoryModel = ({ close ,fetchData }) => {
 
     const [data, setData] = useState({
         name: "",
@@ -38,6 +38,7 @@ const UploadCategoryModel = ({ close }) => {
 if(responseData.success){
    toast.success(responseData.message)
    close()
+   fetchData()
 }
 
         }

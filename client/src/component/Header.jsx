@@ -13,7 +13,7 @@ const Header = () => {
   const user = useSelector((state) => state?.user)
   const navigate = useNavigate()
 
-  console.log('user from store ', user)
+ 
 
   // Logic for Mobile User Icon Click
   const handleMobileUser = () => {
