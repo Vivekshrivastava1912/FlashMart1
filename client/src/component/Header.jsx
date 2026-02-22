@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import logo from '../assets/logo.png'
 import Search from './Search'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaUserCircle, FaShoppingCart } from "react-icons/fa";
 import useMobile from '../hooks/useMobile';
 import { useSelector } from 'react-redux';
+import toast from 'react-hot-toast'; // Make sure to install react-hot-toast
 
 const Header = () => {
   const [isMobile] = useMobile()
@@ -12,31 +13,36 @@ const Header = () => {
   const isSearchPage = location.pathname === "/Search"
   const user = useSelector((state) => state?.user)
   const navigate = useNavigate()
+  
+  // To avoid toast showing multiple times on every render
+  const hasToasted = useRef(false);
 
- 
+  // Success Toast Logic when user logs in
+  useEffect(() => {
+    if (user?._id && !hasToasted.current) {
+      toast.success("Successfully Logged In!");
+      hasToasted.current = true; // Mark as done
+    }
+    if (!user?._id) {
+      hasToasted.current = false; // Reset when user logs out
+    }
+  }, [user?._id]);
 
-  // Logic for Mobile User Icon Click
   const handleMobileUser = () => {
-    // 1. Agar user Login NAHI hai to Login page par bhejo
     if (!user?._id) {
       navigate("/Login")
       return
     }
-
-    // 2. Agar user Login hai, to User Details page par bhejo (Toggle logic)
-    // PATH CHANGED: user-details -> userdetails
     if (location.pathname.includes("userdetails")) {
-      navigate(-1) // Go back
+      navigate(-1)
     } else {
       navigate("/userdetails")
     }
   }
 
-  // Logic for Desktop Account Click (Sirf tab chalega jab user login ho)
   const handleDesktopUser = () => {
-    // PATH CHANGED: user-details -> userdetails
     if (location.pathname.includes("userdetails")) {
-      navigate(-1) // Go back
+      navigate(-1)
     } else {
       navigate("/userdetails")
     }
@@ -44,32 +50,31 @@ const Header = () => {
 
   return (
     <>
-      <header className='overflow-y-auto scrollbar-hide h-25 lg:h-20 md:h-20 shadow-lg sticky top-0 z-40 bg-linear-to-r from-purple-50 to-purple-200 flex flex-col justify-center'>
+      <header className='h-auto lg:h-20 shadow-lg sticky top-0 z-40 bg-linear-to-r from-purple-50 to-purple-200 flex flex-col justify-center py-2 lg:py-0'>
 
-        {/* TOP ROW: Logo and User Icon - Yeh section ab mobile search page par hide ho jayega */}
+        {/* TOP ROW */}
         {!(isSearchPage && isMobile) && (
-          <div className='container mx-auto flex items-center justify-between px-4 md:px-4 py-1 pt-1 gap-2 md:gap-4'>
+          <div className='container mx-auto flex items-center justify-between px-4 gap-2 md:gap-8'>
 
-            {/* ye logo ka section hai */}
-            <div className='flex items-center shrink-0 md:pl-20'>
+            {/* Logo Section */}
+            <div className='flex items-center shrink-0 lg:ml-30'>
               <Link to="/">
                 <img src={logo}
-                  className='w-24 md:w-32 lg:w-40 h-auto object-contain cursor-pointer'
+                  className='w-24 md:w-32 lg:w-40 h-auto object-contain cursor-pointer '
                   alt='logo' />
               </Link>
             </div>
 
-            {/* Search bar for Desktop only */}
+            {/* Search bar - Desktop Only (Large screens) */}
             <div className='hidden lg:flex flex-1 max-w-lg'>
               <Search />
             </div>
 
-            {/* ye login or card botton ka section hai for desktop */}
-            <div className='hidden md:flex items-center gap-5 shrink-0'>
+            {/* Action Buttons Section (Desktop & Tablet) */}
+            <div className='hidden md:flex items-center gap-3 lg:gap-5 shrink-0'>
 
               {/* Login / Account Section */}
               {user?._id ? (
-                // SCENARIO 1: USER IS LOGGED IN -> Show "Account" Button (New Design)
                 <div 
                   onClick={handleDesktopUser} 
                   className='group flex items-center gap-2 cursor-pointer select-none 
@@ -77,32 +82,22 @@ const Header = () => {
                              shadow-sm hover:shadow-md hover:bg-purple-50 
                              transition-all duration-300 transform hover:scale-105 active:scale-95'
                 >
-                  {/* Icon with animation */}
                   <div className='text-purple-500 group-hover:text-purple-700 transition-colors duration-300 group-hover:rotate-12'>
                     <FaUserCircle size={22} />
                   </div>
-                  
                   <p className='font-bold text-sm tracking-wide'>Account</p>
-                  
-                  {/* Small arrow/dot indicator (Optional decoration) */}
-                 
                 </div>
               ) : (
-                // SCENARIO 2: USER IS LOGGED OUT -> Show "Login" Button (Jaisa pehle tha)
                 <Link
                   to={"Login"}
                   className="relative px-3 py-1.5 bg-purple-500 text-white font-black uppercase rounded-md
-                 transition-all duration-300 
-                 hover:bg-purple-500  group inline-block text-center"
+                  transition-all duration-300 
+                  hover:bg-purple-500 group inline-block text-center"
                   onClick={(e) => {
-                    e.preventDefault(); // Turant redirect hone se rokta hai
+                    e.preventDefault();
                     const target = e.currentTarget;
                     const destination = target.getAttribute('href');
-
-                    // Intense Shaking Animation
                     target.style.animation = "superShake 1s cubic-bezier(.36,.07,.19,.97) both";
-
-                    // 2 second baad redirect
                     setTimeout(() => {
                       window.location.href = destination;
                     }, 800);
@@ -110,7 +105,6 @@ const Header = () => {
                 >
                   <div className="relative inline-block">
                     Login
-                    {/* Animated Underline */}
                     <div className="absolute left-0 w-0 h-1 bg-purple-50 transition-all duration-500 group-hover:w-full"></div>
                   </div>
 
@@ -124,32 +118,22 @@ const Header = () => {
                 </Link>
               )}
 
-
-              {/* ye card or item ala botton */}
-              <button className="flex items-center gap-3 bg-purple-500 text-white px-2 py-0.5 rounded-md hover:bg-green-600 transition-all duration-300 shadow-md group active:scale-95">
-                {/* react ka gadi wala icon */}
+              {/* Cart Button */}
+              <button className="flex items-center gap-3 bg-purple-500 lg:mr-30 text-white px-2 py-[-3] rounded-md hover:bg-green-600 transition-all duration-300 shadow-md group active:scale-95">
                 <div className="flex items-center justify-center">
                   <FaShoppingCart size={18} className="text-white group-hover:rotate-12 transition-transform duration-300" />
                 </div>
-
-
-                {/* ye jaya card or item likhe hua hai  */}
-                <div className="text-left border-l border-purple-800 pl-2">
-                  <p className="text-sm font-bold leading-tight">
-                    1 item
-                  </p>
-                  <p className="text-xs font-medium opacity-90 leading-tight">
-                    Total Price
-                  </p>
+                <div className="text-left border-l border-purple-800 pl-2 leading-tight">
+                  <p className="text-xs lg:text-sm font-bold">1 item</p>
+                  <p className="text-[10px] lg:text-xs font-medium opacity-90">Total Price</p>
                 </div>
-
               </button>
             </div>
 
-            {/* user icon only displayin mobile version */}
+            {/* User Icon - Mobile Only */}
             <div 
-              className='lg:hidden flex items-center shrink-0 cursor-pointer' 
-              onClick={handleMobileUser} // Click logic handles Login vs UserDetails
+              className='md:hidden flex items-center shrink-0 cursor-pointer' 
+              onClick={handleMobileUser}
             >
               <div className='text-purple-500 transition-all duration-300 ease-in-out
                             hover:text-purple-500 hover:scale-110 hover:-rotate-12 
@@ -160,8 +144,8 @@ const Header = () => {
           </div>
         )}
 
-        {/* BOTTOM ROW: Search bar for Mobile only */}
-        <div className='lg:hidden mt-2 ml-2 mr-2'>
+        {/* BOTTOM ROW: Mobile Search bar (Only small & medium screens) */}
+        <div className='lg:hidden px-4 mt-2 mb-1 w-full'>
           <Search />
         </div>
 
