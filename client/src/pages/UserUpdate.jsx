@@ -166,8 +166,9 @@ const UserUpdate = () => {
                                 
                                 {renderSidebarItem('product', 'Products', <FaBox />)}
                                 {renderSidebarItem('categorypage', 'Categories', <FaListAlt />)}
+                                   {renderSidebarItem('subcategorypage', 'Sub Category', <FaTags />)}
                                 {renderSidebarItem('uploadproduct', 'Upload', <FaCloudUploadAlt />)}
-                                {renderSidebarItem('subcategorypage', 'Sub Category', <FaTags />)}
+                             
                             </>
                         )}
                     </div>
@@ -276,17 +277,7 @@ const UserUpdate = () => {
                         </div>
                     )}
 
-                    {/* --- ADMIN TAB: UPLOAD PRODUCT --- */}
-                    {activeTab === 'uploadproduct' && userData.role === 'ADMIN' && (
-                        <div className="h-full w-full animate-fade-in">
-                            <div className="flex items-center justify-between mb-4 md:mb-6 sticky top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
-                                <h3 className="text-xl md:text-2xl font-bold text-gray-800">Upload Product</h3>
-                            </div>
-                            <div className="pb-8">
-                                <UploadProduct />
-                            </div>
-                        </div>
-                    )}
+                   
 
                     {/* --- ADMIN TAB: SUB CATEGORY PAGE --- */}
                     {activeTab === 'subcategorypage' && userData.role === 'ADMIN' && (
@@ -296,6 +287,18 @@ const UserUpdate = () => {
                             </div>
                             <div className="pb-8">
                                 <SubCategoryPage />
+                            </div>
+                        </div>
+                    )}
+
+                     {/* --- ADMIN TAB: UPLOAD PRODUCT --- */}
+                    {activeTab === 'uploadproduct' && userData.role === 'ADMIN' && (
+                        <div className="h-full w-full animate-fade-in">
+                            <div className="flex items-center justify-between mb-4 md:mb-6 sticky top-0 bg-gray-50/95 md:bg-purple-200/95 z-10 pb-4 pt-1 border-b border-gray-200/50 backdrop-blur-sm">
+                                <h3 className="text-xl md:text-2xl font-bold text-gray-800">Upload Product</h3>
+                            </div>
+                            <div className="pb-8">
+                                <UploadProduct />
                             </div>
                         </div>
                     )}

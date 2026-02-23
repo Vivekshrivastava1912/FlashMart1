@@ -30,7 +30,7 @@ const ConfirmBox = ({ cancel, confirm, close }) => {
           <div className="flex justify-center gap-3">
             <button
               onClick={cancel || close}
-              className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-200 active:scale-95"
+              className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-green-400 hover:text- transition-all duration-200 active:scale-95"
             >
               Cancel
             </button>
