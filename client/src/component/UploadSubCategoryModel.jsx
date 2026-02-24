@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import uploadImage from '../utils/UploadImage'
-import { useSelector } from 'react-redux' // Redux import kiya
+import { useSelector } from 'react-redux' 
+import Axios from '../utils/Axios'
+import SummaryApi from '../common/SummaryApi'
+import toast from 'react-hot-toast'
 
 const UploadSubCategoryModel = ({ close }) => {
     const [subCategoryData , setSubCategoryData] = useState({
@@ -22,7 +25,6 @@ const UploadSubCategoryModel = ({ close }) => {
         setCategoryData(allCategory || [])
     }, [allCategory])
 
-
     const handleChange = (e)=> {
         const {name , value} = e.target 
         setSubCategoryData((preve)=>{
@@ -33,16 +35,6 @@ const UploadSubCategoryModel = ({ close }) => {
         })
     }
 
-    const handleCategoryChange = (e) => {
-        const { value } = e.target
-        setSubCategoryData((preve) => {
-            return {
-                ...preve,
-                category: [value] 
-            }
-        })
-    }
-console.log(setCategoryData)
     const handleUploadSubCategoryImage = async(e)=>{
         const file = e.target.files[0]
         if(!file){
@@ -68,9 +60,32 @@ console.log(setCategoryData)
         }
     }
 
+    // Yahan (e) pass kiya aur e.preventDefault() add kiya page refresh rokne ke liye
+    const handleSubmitSubCategory =  async(e) => {
+        e.preventDefault() 
+        try{
+            const response = await Axios ({
+                ...SummaryApi.createSubCategory,
+                data : subCategoryData
+            })
+            const {data : responseData} = response
+            if(responseData.success){
+                toast.success(responseData.message)
+                if(close){
+                    close()
+                }
+            }
+        }
+        catch(error){
+              const errorMessage = error?.response?.data?.message || error?.message || "Something went wrong";
+          toast.error(errorMessage)
+        }
+    }
+    
+    console.log("Current SubCategory Data:", subCategoryData)
+
     return (
         <>
-
             <section className="mt-4 bg-white border border-gray-100 shadow-xl rounded-xl overflow-hidden animate-in fade-in slide-in-from-top-5 duration-300">
 
                 {/* Header */}
@@ -85,7 +100,7 @@ console.log(setCategoryData)
                 </div>
 
                 {/* Form Body */}
-                <form className="p-6">
+                <form className="p-6 " onSubmit={handleSubmitSubCategory}>
 
                     <div className="flex flex-col md:flex-row gap-6">
 
@@ -109,14 +124,49 @@ console.log(setCategoryData)
                             {/* Dynamic Category Selector */}
                             <div>
                                 <label htmlFor='category' className="block text-sm font-semibold text-gray-600 mb-2">Select Category</label>
+                               
+                               <div className="flex flex-wrap gap-2 mt-2 mb-2">
+                                    {subCategoryData.category.map((cat, index) => {
+                                        return (
+                                            <div 
+                                                key={cat._id + "selectedValue"} 
+                                                className="flex items-center gap-1 bg-purple-100 text-purple-700 text-sm font-medium px-3 py-1.5 rounded-full border border-purple-200 shadow-sm"
+                                            >
+                                                <p className="cursor-default">{cat.name}</p>
+                                                <div 
+                                                    className="cursor-pointer hover:text-red-500 hover:bg-purple-200 rounded-full w-4 h-4 flex items-center justify-center transition-all ml-1"
+                                                    onClick={() => {
+                                                        setSubCategoryData((preve) => {
+                                                            return {
+                                                                ...preve,
+                                                                category: preve.category.filter(c => c._id !== cat._id)
+                                                            }
+                                                        })
+                                                    }}
+                                                >
+                                                    ✕
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
                                 <select
                                     id='category'
                                     name='category'
-                                    onChange={handleCategoryChange}
+                                    onChange={(e)=>{
+                                        const value = e.target.value
+                                        const categoryDetails = allCategory.find(el => el._id === value)
+                                        
+                                        setSubCategoryData((preve)=>{
+                                            return{
+                                                ...preve,
+                                                category : [...preve.category, categoryDetails]
+                                            }
+                                        })
+                                    }}
                                     className="w-full  px-4 py-3 bg-white border border-gray-200 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm"
                                 >
                                     <option value="">-- Choose Category --</option>
-                                    
                                     
                                     {categoryData?.map((category) => {
                                         return (
@@ -131,7 +181,7 @@ console.log(setCategoryData)
 
                             {/* Submit Button */}
                             <button 
-                                type="button"
+                                type="submit" // Yahan type="button" ki jagah "submit" kar diya gaya hai
                                 disabled={!subCategoryData.name || !subCategoryData.image || isImageLoading}
                                 className={`w-full py-3 mt-auto rounded-lg text-white font-semibold transition-all shadow-md ${
                                     (!subCategoryData.name || !subCategoryData.image || isImageLoading) 

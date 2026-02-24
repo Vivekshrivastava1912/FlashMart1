@@ -32,8 +32,7 @@ const CategoryPage = () => {
   } ,[allCategory])
 
 
-  // FIX: fetchCategory function ko wapas add kiya hai.
-  // Ye server se latest data layega taaki bina reload kiye changes dikhein.
+
   const fetchCategory = async () => {
     try {
       setLoading(true)
@@ -42,7 +41,7 @@ const CategoryPage = () => {
       })
       const { data: responseData } = response
       if (responseData.success) {
-        // Direct local state update kar rahe hain taaki turant dikhe
+  
         setCategoryData(responseData.data)
       }
     }
