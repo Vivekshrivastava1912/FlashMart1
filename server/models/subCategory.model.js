@@ -2,7 +2,6 @@ import mongoose from 'mongoose'
 
 const subcategorySchema = new mongoose.Schema(
     {
-
         name: {
             type: String,
             default: ""
@@ -15,9 +14,11 @@ const subcategorySchema = new mongoose.Schema(
             type: mongoose.Schema.ObjectId,
             ref: 'category'
         } ]
-},
+    },
     { timestamps: true }
-
 )
-const subCategoryModel = mongoose.model('subcategory', subcategorySchema)
+
+// Yahan par fix kiya gaya hai:
+const subCategoryModel = mongoose.models.subcategory || mongoose.model('subcategory', subcategorySchema)
+
 export default subCategoryModel
