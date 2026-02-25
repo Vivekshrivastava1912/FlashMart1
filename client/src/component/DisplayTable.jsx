@@ -42,7 +42,7 @@ const DisplayTable = ({ data, column }) => {
 
   return (
     <div className="w-full bg-white rounded-xl overflow-hidden mt-5 shadow-sm border border-slate-100">
-      <div className="overflow-x-auto overflow-y-auto max-h-[55vh] scrollbar-hide" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+      <div className="overflow-x-auto overflow-y-auto lg:max-h-[55vh] max-h-[70vh] scrollbar-hide" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
         <style dangerouslySetInnerHTML={{__html: `
           .scrollbar-hide::-webkit-scrollbar { display: none; }
         `}} />
@@ -70,12 +70,12 @@ const DisplayTable = ({ data, column }) => {
               table.getRowModel().rows.map((row) => (
                 <tr 
                   key={row.id} 
-                  className="hover:bg-purple-100 transition-all duration-150 ease-in-out group"
+                  className="hover:bg-purple-50 transition-all duration-150 ease-in-out group"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td 
                       key={cell.id} 
-                      className="px-6 py-4 text-sm text-slate-600 border-b border-slate-100 group-last:border-none"
+                      className="px-6 py-4 text-sm text-slate-600 border-b border-slate-00 group-last:border-none"
                     >
                       {renderCellContent(cell, cell.column.columnDef)}
                     </td>

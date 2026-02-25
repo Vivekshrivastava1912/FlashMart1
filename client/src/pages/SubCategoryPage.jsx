@@ -5,12 +5,23 @@ import SummaryApi from '../common/SummaryApi'
 import toast from 'react-hot-toast'
 import DisplayTable from '../component/DisplayTable'
 import { createColumnHelper } from '@tanstack/react-table'
+import EditSubCategory from '../component/EditSubCategory'
+import DeleteSubCategory from '../component/DeleteSubCategory'
+import { FiEdit2, FiTrash2 } from "react-icons/fi" // Added react-icons import
 
 const SubCategoryPage = () => {
   const [openAddSubCategory, setOpenAddSubCategory] = useState(false)
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const columnHelper = createColumnHelper()
+  const [openEdit , setOpenEdit] = useState(false)
+  const [editDataDelete , setEditDataDelete] = useState({
+    _id : ""
+  })
+  const [editDelete , setEditDelete] = useState(false)
+  const [editData , setEditData] = useState({
+    _id  : ""
+  })
 
   const fetchSubCategory = async () => {
     try {
@@ -44,8 +55,6 @@ const SubCategoryPage = () => {
     columnHelper.accessor("category", {
       header: "Category",
       cell: ({ row }) => {
-        // Yaha hum pure category object ko return kar rahe hain 
-        // DisplayTable ise handle kar lega (Name + Image)
         const categories = row.original.category;
         return (
           <div className="flex flex-col gap-1">
@@ -58,13 +67,45 @@ const SubCategoryPage = () => {
           </div>
         )
       }
+    }),
+    columnHelper.display({
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                setEditData(row.original)
+                setOpenEdit(true)
+              }}
+              className="p-1.5 text-green-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+              title="Edit Sub Category"
+            >
+              {/* React Icon applied here */}
+              <FiEdit2 className="w-4.5 h-4.5" />
+            </button>
+
+            <button
+              onClick={() => {
+                 setEditDataDelete(row.original)
+               setEditDelete(true)
+              }}
+              className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+              title="Delete Sub Category"
+            >
+              {/* React Icon applied here */}
+              <FiTrash2 className="w-4.5 h-4.5" />
+            </button>
+          </div>
+        )
+      }
     })
   ]
 
   return (
     <>
       <section className="container m-1 px-2 py-2 relative scrollbar-none overflow-y-auto h-[calc(100vh-100px)]">
-        {/* Header Card */}
         <div className="flex items-center justify-between bg-white shadow-md rounded-xl p-2 border border-gray-100">
           <div className="font-bold text-xl text-gray-800 tracking-tight">
             Sub Category
@@ -95,6 +136,18 @@ const SubCategoryPage = () => {
           </div>
         </div>
       )}
+      { openEdit &&(    <EditSubCategory
+       data = {editData}
+        close = {() => setOpenEdit(false)}
+        fetchData={fetchSubCategory} // Pass fetchData here
+      />)
+    
+      }
+      {
+        editDelete && (
+          <DeleteSubCategory data={editDataDelete} close={() => setEditDelete(false)} fetchData={fetchSubCategory}/>
+        )
+      }
       </section>
     </>
   )

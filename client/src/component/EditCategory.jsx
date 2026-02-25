@@ -81,11 +81,11 @@ if(responseData.success){
             <section className="mt-4  bg-green-50 border border-gray-100 shadow-xl rounded-xl overflow-hidden animate-in fade-in slide-in-from-top-5 duration-300">
 
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 bg-purple-400 border-b border-gray-100">
+                <div className="flex items-center justify-between px-6 py-4 bg-purple-500 border-b border-gray-100">
                     <h1 className="font-bold text-lg text-gray-100 tracking-wide">Update Category</h1>
                     <button
                         onClick={close}
-                        className="text-xl w-8 h-8 flex items-center justify-center rounded-full text-gray-900 hover:bg-green-300 hover:text-red-500 hover:shadow-sm transition-all"
+                        className="text-xl w-8 h-8 flex items-center justify-center rounded-full text-gray-900 hover:text-red-500 hover:shadow-sm transition-all"
                     >
                         ✕
                     </button>
