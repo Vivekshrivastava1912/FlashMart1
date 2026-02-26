@@ -93,7 +93,6 @@ const CategoryPage = () => {
           <div className="font-bold text-xl text-gray-800 tracking-tight">
             Category
           </div>
-
           <button
             onClick={() => setOpenUploadCategoryModel(true)}
             className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-3 rounded-lg shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 transform active:scale-95"
