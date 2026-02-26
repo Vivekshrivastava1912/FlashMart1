@@ -10,12 +10,12 @@ const productSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
-    categoryId: {
+    category: {
         type: mongoose.Schema.ObjectId,
         ref: 'category'
     },
 
-    sub_CategoryId: {
+    subCategory: {
         type: mongoose.Schema.ObjectId,
         ref: 'subCategory'
     },
@@ -44,7 +44,7 @@ const productSchema = new mongoose.Schema({
         default: ""
     },
 
-    more_deatils: {
+    more_details: {
         type: Object,
         default: {}
     },
