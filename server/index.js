@@ -9,6 +9,8 @@ import userRouter from './route/user.route.js'
 import categoryRouter from './route/category.route.js'
 import uploadRouter from './route/upload.router.js'
 import subCategoryRouter from './route/subCategory.route.js'
+import productRouter from './route/product.route.js'; //
+// 'route' ki jagah 'routes' kar do
 
 dotenv.config()
 
@@ -40,6 +42,7 @@ app.use('/api/user', userRouter)
 app.use("/api/category",categoryRouter)
 app.use("/api/file", uploadRouter)
 app.use("/api/subcategory", subCategoryRouter)
+app.use("/api/product", productRouter)
 
 
 // 4. Database and Server Connection
