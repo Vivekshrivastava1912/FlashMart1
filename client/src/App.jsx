@@ -6,7 +6,7 @@ import Header from './component/Header'
 import Footer from './component/Footer'
 import fetchUserDetails from './utils/fetchUserDetails'
 import { setUserDetails } from './redux/userSlice'
-import { setAllCategory } from './redux/productSlice'
+import { setAllCategory ,setAllSubCategory } from './redux/productSlice'
 import { useDispatch } from 'react-redux'
 import Axios from './utils/Axios'
 import SummaryApi from './common/SummaryApi'
@@ -39,12 +39,34 @@ function App() {
      
       }
     }
+
+     const fetchSubCategory = async () => {
+      try {
+       
+        const response = await Axios({
+          ...SummaryApi.getSubCategory
+        })
+        const { data: responseData } = response
+        if (responseData.success) {
+          
+          dispatch(setAllSubCategory(responseData.data))
+      
+        }
+      }
+      catch (error) {
+      }
+      finally {
+     
+      }
+    }
+    
   
    
 
   useEffect(() => {
     fetchUser()
     fetchCategory()
+      fetchSubCategory()
   }, [])
 
 
