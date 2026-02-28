@@ -1,26 +1,25 @@
 import mongoose from 'mongoose'
 
 const productSchema = new mongoose.Schema({
-
     name: {
         type: String,
-
     },
     image: {
         type: Array,
         default: []
     },
-    category: {
+    category:[
+         {
         type: mongoose.Schema.ObjectId,
         ref: 'category'
-    },
-
-    subCategory: {
+    }
+    ],
+    subCategory:[
+         {
         type: mongoose.Schema.ObjectId,
         ref: 'subCategory'
-    },
-
-
+    }
+    ],
     unit: {
         type: String,
         default: ""
@@ -33,34 +32,26 @@ const productSchema = new mongoose.Schema({
         type: Number,
         default: null
     },
-
     discount: {
         type: Number,
         default: null
     },
-
     description: {
         type: String,
         default: ""
     },
-
     more_details: {
         type: Object,
         default: {}
     },
-
     publish: {
         type: Boolean,
         default: true
     },
+}, { timestamps: true });
 
+// Added text index on the 'name' field for efficient searching
+productSchema.index({ name: 'text' });
 
-
-
-
-
-},
-    { timestamps: true }
-)
 const ProductModel = mongoose.model('product', productSchema)
 export default ProductModel

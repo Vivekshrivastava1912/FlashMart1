@@ -63,8 +63,8 @@ export const addProductController = async (request, response) => {
 // Get Product Controller
 export const getProductController = async (request, response) => {
     try {
-        // Filhal ke liye .populate() hata diya hai check karne ke liye
-        const data = await ProductModel.find().sort({ createdAt: -1 });
+        // 🔥 FIX: Sirf _id ke basis pe ascending sort karenge. Isse data jis order me DB me gaya hai, waise hi aayega.
+        const data = await ProductModel.find().sort({ _id: 1 });
 
         return response.status(200).json({
             message: "Products fetched successfully",
@@ -74,7 +74,7 @@ export const getProductController = async (request, response) => {
         });
 
     } catch (error) {
-        console.log("Get Product Error: ", error); // Ye terminal me exact error batayega
+        console.log("Get Product Error: ", error); // Terminal check karne ke liye
         return response.status(500).json({
             message: error.message || "Error fetching products",
             error: true,
