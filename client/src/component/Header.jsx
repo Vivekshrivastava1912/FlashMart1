@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import logo from '../assets/logo.png'
 import Search from './Search'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -12,8 +12,9 @@ const Header = () => {
   const location = useLocation()
   const isSearchPage = location.pathname === "/Search"
   const user = useSelector((state) => state?.user)
+  const cart = useSelector((state) => state?.cart)
   const navigate = useNavigate()
-  
+
   // To avoid toast showing multiple times on every render
   const hasToasted = useRef(false);
 
@@ -48,6 +49,26 @@ const Header = () => {
     }
   }
 
+  // ✅ New Logic to Calculate Cart Total from LocalStorage
+  const [localCartTotal, setLocalCartTotal] = useState({ items: 0, price: 0 });
+
+  useEffect(() => {
+    const updateCartTotal = () => {
+      const storedCart = JSON.parse(localStorage.getItem('cartItems')) || [];
+      const totalItems = storedCart.length;
+      const totalPrice = storedCart.reduce((acc, item) => acc + (item.sellingPrice || item.price || 0), 0);
+      setLocalCartTotal({ items: totalItems, price: totalPrice });
+    };
+
+    // Initial load
+    updateCartTotal();
+
+    // Set an interval to check local storage changes (since other tabs/components might change it)
+    const intervalId = setInterval(updateCartTotal, 1000); 
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <>
       <header className='h-auto lg:h-20 shadow-lg sticky top-0 z-40 bg-linear-to-r from-purple-50 to-purple-200 flex flex-col justify-center py-2 lg:py-0'>
@@ -75,8 +96,8 @@ const Header = () => {
 
               {/* Login / Account Section */}
               {user?._id ? (
-                <div 
-                  onClick={handleDesktopUser} 
+                <div
+                  onClick={handleDesktopUser}
                   className='group flex items-center gap-2 cursor-pointer select-none 
                              bg-white border border-purple-200 text-purple-700 px-4 py-2 rounded-xl
                              shadow-sm hover:shadow-md hover:bg-purple-50 
@@ -119,20 +140,24 @@ const Header = () => {
               )}
 
               {/* Cart Button */}
-              <button className="flex items-center gap-3 bg-purple-500 lg:mr-30 text-white px-2 py-[-3] rounded-md hover:bg-green-600 transition-all duration-300 shadow-md group active:scale-95">
+              <button
+                onClick={() => navigate('/mycard')} // ✅ Updated Route here just in case
+                className="flex items-center gap-3 bg-purple-500 lg:mr-30 text-white px-2 py-[-3] rounded-md hover:bg-green-600 transition-all duration-300 shadow-md group active:scale-95"
+              >
                 <div className="flex items-center justify-center">
                   <FaShoppingCart size={18} className="text-white group-hover:rotate-12 transition-transform duration-300" />
                 </div>
                 <div className="text-left border-l border-purple-800 pl-2 leading-tight">
-                  <p className="text-xs lg:text-sm font-bold">1 item</p>
-                  <p className="text-[10px] lg:text-xs font-medium opacity-90">Total Price</p>
+                  {/* ✅ Using localCartTotal instead of Redux cart */}
+                  <p className="text-xs lg:text-sm font-bold">{localCartTotal.items} items</p>
+                  <p className="text-[10px] lg:text-xs font-medium opacity-90">₹{localCartTotal.price}</p>
                 </div>
               </button>
             </div>
 
             {/* User Icon - Mobile Only */}
-            <div 
-              className='md:hidden flex items-center shrink-0 cursor-pointer' 
+            <div
+              className='md:hidden flex items-center shrink-0 cursor-pointer'
               onClick={handleMobileUser}
             >
               <div className='text-purple-500 transition-all duration-300 ease-in-out

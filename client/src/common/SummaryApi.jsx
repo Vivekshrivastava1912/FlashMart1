@@ -1,84 +1,84 @@
 import ForgotPassword from "../pages/ForgotPassword"
 
 // Isse 5173 se badal kar 8000 kar dein
-export const baseURL = "http://localhost:8000" 
+export const baseURL = "http://localhost:8000"
 
 const SummaryApi = {
-    register : {
-        url : '/api/user/register',
-        method : "post"
+    register: {
+        url: '/api/user/register',
+        method: "post"
     },
-    login : {
-        url : '/api/user/login',
-        method : "post"
-    } ,
-
-    ForgotPassword : {
-        url :'/api/user/forget-password',
-        method : "put"
+    login: {
+        url: '/api/user/login',
+        method: "post"
     },
 
-    refreshtoken :{
-        url : "/api/user/refresh-token",
-        method : "post"
+    ForgotPassword: {
+        url: '/api/user/forget-password',
+        method: "put"
     },
-    userDetails : {
-        url : "/api/user/user-details" ,
-        method : "get"
+
+    refreshtoken: {
+        url: "/api/user/refresh-token",
+        method: "post"
     },
-    addCategory : {
-        url : '/api/category/add-category',
-        method : "post"
+    userDetails: {
+        url: "/api/user/user-details",
+        method: "get"
+    },
+    addCategory: {
+        url: '/api/category/add-category',
+        method: "post"
 
     },
 
-    uploadeImage :{
-        url : '/api/file/upload',
-        method : "post"
+    uploadeImage: {
+        url: '/api/file/upload',
+        method: "post"
     },
-    getCategory : {
-        url : '/api/category/get',
-        method : "get"
+    getCategory: {
+        url: '/api/category/get',
+        method: "get"
     },
-    updateCategory : {
-        url : '/api/category/update',
-        method : "put"
+    updateCategory: {
+        url: '/api/category/update',
+        method: "put"
     },
-    deleteCategory : {
-        url : '/api/category/delete',
-        method : "delete"
+    deleteCategory: {
+        url: '/api/category/delete',
+        method: "delete"
     },
-    createSubCategory :{
-        url : '/api/subcategory/create',
-        method : "post"
+    createSubCategory: {
+        url: '/api/subcategory/create',
+        method: "post"
     },
-    getSubCategory : {
-        url : '/api/subcategory/get',
-        method : "get"
+    getSubCategory: {
+        url: '/api/subcategory/get',
+        method: "get"
     },
-    updateSubCategory : {
-        url : '/api/subcategory/update',
-        method : "put"
+    updateSubCategory: {
+        url: '/api/subcategory/update',
+        method: "put"
     },
-    deleteSubCategory : {
-        url : '/api/subcategory/delete',
-        method : "delete"
+    deleteSubCategory: {
+        url: '/api/subcategory/delete',
+        method: "delete"
     },
-    addProduct : {
-        url : '/api/product/add-product',
-        method : "post"
+    addProduct: {
+        url: '/api/product/add-product',
+        method: "post"
     },
-    getProduct : {
-        url : '/api/product/get',
-        method : "get"
+    getProduct: {
+        url: '/api/product/get',
+        method: "get"
     },
-    updateProduct : {
-        url : '/api/product/update',
-        method : "put"
+    updateProduct: {
+        url: '/api/product/update',
+        method: "put"
     },
-    deleteProduct : {
-        url : '/api/product/delete',
-        method : "delete"
+    deleteProduct: {
+        url: '/api/product/delete',
+        method: "delete"
     }
 }
 

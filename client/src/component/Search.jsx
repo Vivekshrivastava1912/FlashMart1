@@ -15,8 +15,7 @@ const Search = () => {
 
   const handleSearchRedirect = () => {
     if (!isSearchPage) {
-      navigate('Search');
-    }
+      navigate('Search'); }
   };
 
   return (

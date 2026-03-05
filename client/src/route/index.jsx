@@ -15,6 +15,7 @@ import Product from "../pages/Product";
 import CategoryPage from "../pages/CategoryPage";
 import UploadProduct from "../pages/UploadProduct";
 import SubCategoryPage from "../pages/SubCategoryPage";
+import UserCategory from "../pages/UserCategory";
 
 
 
@@ -104,7 +105,15 @@ const router = createBrowserRouter([{
     path: "subcategorypage",
     element: <SubCategoryPage />
   }
+,
+// Upar import kar lena
 
+
+// Apne router block ke andar add karo:
+{
+    path: "category/:categoryId",
+    element: <UserCategory/>
+}
 
 
 
