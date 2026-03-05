@@ -8,9 +8,9 @@ import ProductModel from "../models/product.model.js"
 // Add Product Controller
 export const addProductController = async (request, response) => {
     try {
-        const { 
-            name, image, category, subCategory, unit, 
-            stock, price, discount, discription, more_details, publish 
+        const {
+            name, image, category, subCategory, unit,
+            stock, price, discount, discription, more_details, publish
         } = request.body;
 
         // Validation: Main fields check kar rahe hain
@@ -48,7 +48,7 @@ export const addProductController = async (request, response) => {
         });
 
     } catch (error) {
-        console.log("Database Save Error: ", error); 
+        console.log("Database Save Error: ", error);
         return response.status(500).json({
             message: error.message || "Internal server error",
             error: true,
@@ -86,12 +86,12 @@ export const getProductController = async (request, response) => {
 // Update Product Controller
 export const updateProductController = async (request, response) => {
     try {
-        const { 
-            _id, name, image, category, subCategory, unit, 
-            stock, price, discount, discription, more_details, publish 
+        const {
+            _id, name, image, category, subCategory, unit,
+            stock, price, discount, discription, more_details, publish
         } = request.body;
 
-        if(!_id){
+        if (!_id) {
             return response.status(400).json({
                 message: "Product ID is required",
                 error: true,

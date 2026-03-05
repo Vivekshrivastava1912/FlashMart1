@@ -39,7 +39,7 @@ app.get('/', (request, response) => {
 })
 
 app.use('/api/user', userRouter)
-app.use("/api/category",categoryRouter)
+app.use("/api/category", categoryRouter)
 app.use("/api/file", uploadRouter)
 app.use("/api/subcategory", subCategoryRouter)
 app.use("/api/product", productRouter)
