@@ -1,0 +1,16 @@
+{
+    "version" : 2,
+    "name" : "FlashMart",
+    "builds" : [
+        {
+            "src" : "./index.js",
+            "use" : "@vercel/node"
+        }
+    ],
+    "routes" : [
+        {
+            "src" : "/(.*)",
+            "dest" : "/"
+        }
+    ]
+}
