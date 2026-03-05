@@ -44,7 +44,7 @@ const ResetPassword = () => {
     try {
       const response = await Axios({
         method: 'put', 
-        url: "http://localhost:8000/api/user/reset-password", 
+        url: "https://flash-mart-neon.vercel.app/api/user/reset-password", 
         data: data 
       })
 

@@ -17,7 +17,7 @@ const UserDetails = () => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/api/user/user-details", {
+                const response = await axios.get("https://flash-mart-neon.vercel.app/api/user/user-details", {
                     withCredentials: true 
                 });
                 if (response.data.success) {
@@ -39,7 +39,7 @@ const UserDetails = () => {
 
     const handleLogout = async () => {
         try {
-            const response = await axios.get("http://localhost:8000/api/user/logout", {
+            const response = await axios.get("https://flash-mart-neon.vercel.app/api/user/logout", {
                 withCredentials: true
             });
             if (response.data.success) {

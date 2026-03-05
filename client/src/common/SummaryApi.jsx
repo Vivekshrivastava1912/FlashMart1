@@ -1,7 +1,7 @@
 import ForgotPassword from "../pages/ForgotPassword"
 
 // Isse 5173 se badal kar 8000 kar dein
-export const baseURL = "http://localhost:8000"
+export const baseURL = "https://flash-mart-neon.vercel.app"
 
 const SummaryApi = {
     register: {

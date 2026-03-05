@@ -35,7 +35,7 @@ const UserUpdate = () => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/api/user/user-details", { withCredentials: true });
+                const response = await axios.get("https://flash-mart-neon.vercel.app/api/user/user-details", { withCredentials: true });
                 if (response.data.success) {
                     const user = response.data.data;
                     // Storing role here
@@ -72,7 +72,7 @@ const UserUpdate = () => {
         setLoading(true);
         const formData = new FormData(); formData.append('avatar', avatarFile);
         try {
-            const response = await axios.put("http://localhost:8000/api/user/upload-avatar", formData, {
+            const response = await axios.put("https://flash-mart-neon.vercel.app/api/user/upload-avatar", formData, {
                 headers: { "Content-Type": "multipart/form-data" }, withCredentials: true
             });
             if (response.data.success) toast.success("Avatar update successful");
@@ -82,7 +82,7 @@ const UserUpdate = () => {
     const handleUserUpdate = async (e) => {
         e.preventDefault(); setLoading(true);
         try {
-            const response = await axios.put("http://localhost:8000/api/user/update-user", userData, { withCredentials: true });
+            const response = await axios.put("https://flash-mart-neon.vercel.app/api/user/update-user", userData, { withCredentials: true });
             if (response.data.success) toast.success("Profile update successful");
         } catch (error) { toast.error("Failed to update profile"); } finally { setLoading(false); }
     };
@@ -90,7 +90,7 @@ const UserUpdate = () => {
     const handleAddressUpdate = async (e) => {
         e.preventDefault(); setLoading(true);
         try {
-            const response = await axios.put("http://localhost:8000/api/user/update-user", { address_detail: [addressData] }, { withCredentials: true });
+            const response = await axios.put("https://flash-mart-neon.vercel.app/api/user/update-user", { address_detail: [addressData] }, { withCredentials: true });
             if (response.data.success) toast.success("Address update successful");
         } catch (error) { toast.error("Failed to update address"); } finally { setLoading(false); }
     };

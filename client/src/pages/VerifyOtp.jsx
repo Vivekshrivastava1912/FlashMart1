@@ -41,7 +41,7 @@ const VerifyOtp = () => {
     try {
       const response = await Axios({
         method: 'put', 
-        url: "http://localhost:8000/api/user/verify-forgot-password-otp", 
+        url: "https://flash-mart-neon.vercel.app/api/user/verify-forgot-password-otp", 
         data: {
             otp: fullOtp,
             email: location?.state?.email

@@ -20,7 +20,7 @@ const ForgotPassword = () => {
     try {
       const response = await Axios({
         method: 'put', 
-        url: "http://localhost:8000/api/user/forget-password", 
+        url: "https://flash-mart-neon.vercel.app/api/user/forget-password", 
         data: data 
       })
 
