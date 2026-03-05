@@ -55,7 +55,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-20 relative">
+    <div className="bg-linear-to-r from-purple-50 to-purple-200 min-h-screen pb-20 relative">
       
       {/* --- Banner Section --- */}
       <div className="container mx-auto px-2 md:px-4 pt-4 md:pt-6">

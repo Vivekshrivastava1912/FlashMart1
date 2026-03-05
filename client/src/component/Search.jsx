@@ -1,21 +1,44 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import { FaSearch } from "react-icons/fa";
-import { IoMdArrowBack } from "react-icons/io"; // Back icon import kiya
+import { IoMdArrowBack } from "react-icons/io"; 
 import { TypeAnimation } from 'react-type-animation';
-import { useNavigate, useLocation } from 'react-router-dom'; // useLocation add kiya
-import useMobile from '../hooks/useMobile'; // isMobile check karne ke liye
+import { useNavigate, useLocation } from 'react-router-dom'; 
+import useMobile from '../hooks/useMobile'; 
 
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const [isMobile] = useMobile(); // Hook use kiya
+  const [isMobile] = useMobile(); 
 
   const isSearchPage = location.pathname === "/Search";
 
+  // URL me jo search query hai usko input me set karne ke liye
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const query = searchParams.get("q");
+    if (query) {
+      setSearchTerm(query);
+    } else {
+      setSearchTerm("");
+    }
+  }, [location.search]);
+
+  // Jaise hi type karenge, wo URL update karke Search page par bhej dega
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (value) {
+      navigate(`/Search?q=${value}`);
+    } else {
+      navigate(`/Search`);
+    }
+  };
+
   const handleSearchRedirect = () => {
     if (!isSearchPage) {
-      navigate('Search'); }
+      navigate(searchTerm ? `/Search?q=${searchTerm}` : '/Search'); 
+    }
   };
 
   return (
@@ -36,7 +59,7 @@ const Search = () => {
         <input
           type="text"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={handleSearchChange} // Yaha change kiya hai
           onClick={handleSearchRedirect} 
           placeholder=""
           className='w-full h-9 lg:h-11 px-4 md:px-6 pr-14 rounded-full border-none bg-gray-100 text-gray-700 outline-none 
@@ -83,4 +106,4 @@ const Search = () => {
   )
 }
 
-export default Search
+export default Search;

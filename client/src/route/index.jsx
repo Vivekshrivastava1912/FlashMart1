@@ -16,6 +16,7 @@ import CategoryPage from "../pages/CategoryPage";
 import UploadProduct from "../pages/UploadProduct";
 import SubCategoryPage from "../pages/SubCategoryPage";
 import UserCategory from "../pages/UserCategory";
+import Payment from "../pages/Payment";
 
 
 
@@ -113,6 +114,10 @@ const router = createBrowserRouter([{
 {
     path: "category/:categoryId",
     element: <UserCategory/>
+},
+{
+  path: "payment",
+  element: <Payment/>
 }
 
 

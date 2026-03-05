@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast'; // ✅ Toast import kiya
 
+// ✅ React Icons import kiye
+import { BsCartX } from "react-icons/bs"; 
+import { FiTrash2, FiCalendar } from "react-icons/fi";
+import { FaPaypal, FaCcMastercard, FaCcVisa } from "react-icons/fa";
+
 const MyCard = () => {
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
@@ -34,13 +39,14 @@ const MyCard = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-        <img src="https://cdn-icons-png.flaticon.com/512/11329/11329060.png" alt="Empty Cart" className="w-40 h-40 opacity-50 mb-4" />
+      <div className="min-h-130 bg-gray-50 flex flex-col items-center justify-center p-1 mt-2 rounded-xl">
+        {/* ✅ Empty Cart Icon from react-icons */}
+        <BsCartX className="w-40 h-40 opacity-50 mb-4 text-gray-500" />
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Your cart is empty!</h2>
         <p className="text-gray-500 mb-6 text-center">Looks like you haven't added anything to your cart yet.</p>
         <button 
           onClick={() => navigate('/')}
-          className="bg-green-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-green-700 transition-colors"
+          className="bg-purple-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-purple-700 transition-colors"
         >
           START SHOPPING
         </button>
@@ -84,9 +90,10 @@ const MyCard = () => {
                       
                       <button 
                         onClick={() => handleRemove(item._id || item.id)}
-                        className="text-red-500 hover:text-red-700 text-sm font-semibold flex items-center gap-1 bg-red-50 px-3 py-1.5 rounded-md transition-colors"
+                        className="text-red-500 hover:text-red-700 text-sm font-semibold flex items-center gap-1.5 bg-red-50 px-3 py-1.5 rounded-md transition-colors"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        {/* ✅ Trash/Remove Icon from react-icons */}
+                        <FiTrash2 size={16} />
                         Remove
                       </button>
                     </div>
@@ -133,7 +140,8 @@ const MyCard = () => {
             {/* Delivery Date Info */}
             <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 mb-6 flex items-start gap-3">
               <div className="text-blue-600 mt-0.5">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                {/* ✅ Calendar Icon from react-icons */}
+                <FiCalendar size={20} />
               </div>
               <div>
                 <p className="text-sm font-bold text-blue-900">Estimated Delivery</p>
@@ -142,18 +150,23 @@ const MyCard = () => {
             </div>
 
             {/* Checkout Button */}
-            <button className="w-full bg-green-600 text-white font-bold py-3.5 rounded-lg hover:bg-green-700 transition-colors shadow-lg shadow-green-200 mb-4">
+            <button 
+              onClick={() => navigate('/payment')} // ✅ Yahan Navigation add kiya
+              className="w-full bg-purple-600 text-white font-bold py-3.5 rounded-lg hover:bg-purple-700 transition-colors shadow-lg shadow-purple-300 mb-4"
+            >
               PROCEED TO PAY
             </button>
 
             {/* Payment Methods */}
             <div className="border-t border-gray-100 pt-4 mt-2">
               <p className="text-xs text-gray-400 text-center mb-3 font-medium uppercase tracking-wider">Accepted Payment Methods</p>
-              <div className="flex items-center justify-center gap-3 grayscale opacity-70">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" className="h-4" alt="UPI" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" className="h-4" alt="PayPal" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" className="h-5" alt="MasterCard" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" className="h-3" alt="Visa" />
+              <div className="flex items-center justify-center gap-4 grayscale opacity-70 text-gray-500">
+                {/* UPI doesn't have a standard react-icon, so kept the image */}
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" className="h-4 object-contain" alt="UPI" />
+                {/* ✅ Payment Icons from react-icons */}
+                <FaPaypal size={22} />
+                <FaCcMastercard size={26} />
+                <FaCcVisa size={26} />
               </div>
             </div>
 
