@@ -60,7 +60,7 @@ const Home = () => {
       {/* --- Banner Section --- */}
       <div className="container mx-auto px-2 md:px-4 pt-4 md:pt-6">
         <div className="relative overflow-hidden rounded-xl md:rounded-2xl shadow-sm border border-gray-100 group mb-10">
-          <div className="w-full h-40 sm:h-52 md:h-80 lg:h-95 bg-slate-200">
+          <div className="w-full h-30 sm:h-52 md:h-80 lg:h-95 bg-slate-200">
             <img 
               src={bannerDesktop} 
               alt="Blinkit Style Banner"
