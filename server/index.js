@@ -18,10 +18,7 @@ const app = express()
 // 1. CORS Setup (Dono URLs allow kar diye hain taaki Vercel par error na aaye)
 app.use(cors({
     credentials: true,
-    origin: [
-        "http://localhost:5173", 
-        "https://flash-mart-clent.vercel.app" // Aapka Frontend URL
-    ]
+   origin: ["http://localhost:5173", "https://flash-mart-clent.vercel.app"]
 }))
 
 // 2. Middlewares
