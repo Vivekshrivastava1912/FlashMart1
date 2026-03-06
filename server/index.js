@@ -9,24 +9,26 @@ import userRouter from './route/user.route.js'
 import categoryRouter from './route/category.route.js'
 import uploadRouter from './route/upload.router.js'
 import subCategoryRouter from './route/subCategory.route.js'
-import productRouter from './route/product.route.js'; //
-// 'route' ki jagah 'routes' kar do
+import productRouter from './route/product.route.js'; 
 
 dotenv.config()
 
-const app = express() // <--- Ye line missing thi ya niche thi
+const app = express()
 
-// 1. CORS Setup (Fixed for localhost:5173)
+// 1. CORS Setup (Dono URLs allow kar diye hain taaki Vercel par error na aaye)
 app.use(cors({
     credentials: true,
-    origin: process.env.FRONTEND_URL || "http://localhost:5173"
+    origin: [
+        "http://localhost:5173", 
+        "https://flash-mart-clent.vercel.app" // Aapka Frontend URL
+    ]
 }))
 
-// 2. Middlewares (Sahi order mein)
+// 2. Middlewares
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
-app.use(morgan('dev')) // Fixed Morgan
+app.use(morgan('dev')) 
 app.use(helmet({
     crossOriginResourcePolicy: false
 }))
