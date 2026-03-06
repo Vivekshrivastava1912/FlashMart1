@@ -16,10 +16,12 @@ dotenv.config()
 const app = express()
 
 // 1. CORS Setup (Dono URLs allow kar diye hain taaki Vercel par error na aaye)
+
 app.use(cors({
+    origin: "https://flash-mart-clent.vercel.app", 
     credentials: true,
-   origin: ["http://localhost:5173", "https://flash-mart-clent.vercel.app"]
-}))
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"] 
+}));
 
 // 2. Middlewares
 app.use(express.json())
