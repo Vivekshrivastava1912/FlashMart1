@@ -9,9 +9,6 @@ import generatedOtp from '../utils/generatedOtp.js';
 import forgotPasswordTemplate from '../utils/forgotPasswordTemplate.js';
 import jwt from 'jsonwebtoken';
 
-
-
-
 // ------------------------registration controller hai jise user ka data database me save kar rahe hai-------------------------------------//
 export async function registerUserController(request, response) {
 
@@ -90,8 +87,6 @@ export async function registerUserController(request, response) {
 
 
     // end of register user controller
-
-
 
 }
 
@@ -244,10 +239,9 @@ export async function logoutController(request, response) {
             sameSite: 'None'
         }
 
-        // cookies ko clear kar rah hai 
-
-        response.clearCookie('accessToken', cookieOptions),
-            response.clearCookie('refreshToken', cookieOptions)
+        // cookies ko clear kar rah hai (YAHAN COMMA HATAKAR SEMICOLON LAGAYA HAI)
+        response.clearCookie('accessToken', cookieOptions);
+        response.clearCookie('refreshToken', cookieOptions);
 
 
         const removeRefreshToken = await UserModel.findByIdAndUpdate(userId, {
@@ -579,10 +573,11 @@ export async function refreshToken(request, response) {
         }
         response.cookie('accessToken',newAccessToken,cookieOptions )
 
+        // YAHAN ERROR AUR SUCCESS VALUES KO THEEK KIYA HAI
         return response.json({
             message : "New Access token generated...",
-            error :true ,
-            success: false ,
+            error : false , 
+            success: true , 
             data : {
                 accessToken : newAccessToken
             }
