@@ -31,7 +31,8 @@ const Login = () => {
     try {
       const response = await Axios({
         ...SummaryApi.login, // Make sure SummaryApi has login endpoint
-        data: data 
+        data: data,
+        withCredentials: true // <--- SIRF YE LINE ADD KI HAI COOKIES KE LIYE
       })
 
       if (response.data.error) {
