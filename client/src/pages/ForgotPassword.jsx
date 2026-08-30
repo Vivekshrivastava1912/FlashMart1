@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { toast } from 'react-hot-toast'
 import Axios from '../utils/Axios'
+import SummaryApi from '../common/SummaryApi';
 import { IoArrowBack } from "react-icons/io5"; 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -19,8 +20,7 @@ const ForgotPassword = () => {
     e.preventDefault()
     try {
       const response = await Axios({
-        method: 'put', 
-        url: "https://flash-mart-neon.vercel.app/api/user/forget-password", 
+        ...SummaryApi.ForgotPassword, 
         data: data 
       })
 

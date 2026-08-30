@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import Axios from '../utils/Axios';
+import SummaryApi from '../common/SummaryApi';
 import { 
     FaEnvelope, FaPhone, FaCalendarAlt, FaSignOutAlt, 
     FaShoppingBag, FaMapMarkerAlt, FaEdit, FaTimes, 
@@ -17,8 +18,8 @@ const UserDetails = () => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await axios.get("https://flash-mart-neon.vercel.app/api/user/user-details", {
-                    withCredentials: true 
+                const response = await Axios({
+                    ...SummaryApi.userDetails
                 });
                 if (response.data.success) {
                     setUserData(response.data.data);
@@ -39,8 +40,8 @@ const UserDetails = () => {
 
     const handleLogout = async () => {
         try {
-            const response = await axios.get("https://flash-mart-neon.vercel.app/api/user/logout", {
-                withCredentials: true
+            const response = await Axios({
+                ...SummaryApi.logout
             });
             if (response.data.success) {
                 toast.success("Logged out successfully");

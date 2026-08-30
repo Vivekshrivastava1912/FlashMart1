@@ -1,7 +1,8 @@
-import ForgotPassword from "../pages/ForgotPassword"
-
-// Isse 5173 se badal kar 8000 kar dein
-export const baseURL = "https://flash-mart-neon.vercel.app"
+// Dynamically set baseURL: VITE_API_URL or localhost:8000 when running locally, or deployed backend on Vercel
+export const baseURL = import.meta.env.VITE_API_URL || 
+  (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? "http://localhost:8000"
+    : "https://flash-mart-neon.vercel.app");
 
 const SummaryApi = {
     register: {
@@ -12,12 +13,30 @@ const SummaryApi = {
         url: '/api/user/login',
         method: "post"
     },
-
+    logout: {
+        url: '/api/user/logout',
+        method: 'get'
+    },
+    uploadAvatar: {
+        url: '/api/user/upload-avatar',
+        method: 'put'
+    },
+    updateUser: {
+        url: '/api/user/update-user',
+        method: 'put'
+    },
     ForgotPassword: {
         url: '/api/user/forget-password',
         method: "put"
     },
-
+    verifyForgotPasswordOtp: {
+        url: '/api/user/verify-forgot-password-otp',
+        method: 'put'
+    },
+    resetPassword: {
+        url: '/api/user/reset-password',
+        method: 'put'
+    },
     refreshtoken: {
         url: "/api/user/refresh-token",
         method: "post"
@@ -29,9 +48,7 @@ const SummaryApi = {
     addCategory: {
         url: '/api/category/add-category',
         method: "post"
-
     },
-
     uploadeImage: {
         url: '/api/file/upload',
         method: "post"

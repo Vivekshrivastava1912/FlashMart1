@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SummaryApi, { baseURL } from '../common/SummaryApi';
+import Axios from '../utils/Axios';
 import bannerDesktop from '../assets/bannerd.png';
 import toast from 'react-hot-toast'; // ✅ react-hot-toast import kiya
 
@@ -9,10 +10,44 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 30;
+
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [activeImage, setActiveImage] = useState(null); 
   
   const navigate = useNavigate();
+
+  // Pagination Calculations
+  const totalPages = Math.ceil(products.length / productsPerPage);
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  const handlePageChange = (pageNumber) => {
+    if (typeof pageNumber !== 'number') return;
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 350, behavior: 'smooth' });
+  };
+
+  // Smart Page Numbers for standard website pagination (e.g. 1 2 3 ... 10)
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, '...', totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+      }
+    }
+    return pages;
+  };
 
   // ✅ Alert ki jagah Toast laga diya
   const handleAddToCart = (product, e) => {
@@ -31,18 +66,22 @@ const Home = () => {
 
   const fetchCategory = async () => {
     try {
-      const response = await fetch(baseURL + SummaryApi.getCategory.url, { method: SummaryApi.getCategory.method });
-      const data = await response.json();
-      if (data.success) setCategories(data.data || []);
+      const response = await Axios({
+        ...SummaryApi.getCategory
+      });
+      const data = response?.data;
+      if (data?.success) setCategories(data.data || []);
       else if (Array.isArray(data)) setCategories(data);
     } catch (error) { console.error("Category fetch error:", error); }
   };
 
   const fetchProduct = async () => {
     try {
-      const response = await fetch(baseURL + SummaryApi.getProduct.url, { method: SummaryApi.getProduct.method });
-      const data = await response.json();
-      if (data.success) setProducts(data.data || []);
+      const response = await Axios({
+        ...SummaryApi.getProduct
+      });
+      const data = response?.data;
+      if (data?.success) setProducts(data.data || []);
       else if (Array.isArray(data)) setProducts(data);
     } catch (error) { console.error("Product fetch error:", error); }
   };
@@ -102,40 +141,88 @@ const Home = () => {
           {loading ? (
              <p className="text-center text-gray-500">Loading products...</p>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-              {products.map((product, index) => {
-                const prodKey = product?._id ? `prod-${product._id}` : `prod-idx-${index}`;
-                let productImg = Array.isArray(product?.productImage) ? product.productImage[0] : (product?.productImage || product?.image?.[0] || product?.image);
-                const productName = product?.productName || product?.name || "Product Name";
-                const sellingPrice = product?.sellingPrice || product?.price || 0;
-                const originalPrice = product?.price || sellingPrice;
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                {currentProducts.map((product, index) => {
+                  const prodKey = product?._id ? `prod-${product._id}` : `prod-idx-${index}`;
+                  let productImg = Array.isArray(product?.productImage) ? product.productImage[0] : (product?.productImage || product?.image?.[0] || product?.image);
+                  const productName = product?.productName || product?.name || "Product Name";
+                  const sellingPrice = product?.sellingPrice || product?.price || 0;
+                  const originalPrice = product?.price || sellingPrice;
 
-                return (
-                <div 
-                  key={prodKey} 
-                  className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition-all border border-gray-100 flex flex-col cursor-pointer"
-                  onClick={() => { 
-                    setSelectedProduct(product); 
-                    setActiveImage(productImg); 
-                  }}
-                >
-                  <div className="w-full h-32 md:h-40 bg-slate-100 flex items-center justify-center mb-3 overflow-hidden p-2">
-                     {productImg ? <img src={productImg} alt={productName} className="object-contain h-full w-full mix-blend-multiply" /> : <span className="text-slate-400 text-xs">No Image</span>}
-                  </div>
-                  <div className="grow flex flex-col justify-between">
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-800 line-clamp-2 mb-1">{productName}</h3>
-                      <p className="text-xs text-gray-500 mb-2 truncate">{product?.brand || "General"}</p>
+                  return (
+                  <div 
+                    key={prodKey} 
+                    className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition-all border border-gray-100 flex flex-col cursor-pointer"
+                    onClick={() => { 
+                      setSelectedProduct(product); 
+                      setActiveImage(productImg); 
+                    }}
+                  >
+                    <div className="w-full h-32 md:h-40 bg-slate-100 flex items-center justify-center mb-3 overflow-hidden p-2">
+                       {productImg ? <img src={productImg} alt={productName} className="object-contain h-full w-full mix-blend-multiply" /> : <span className="text-slate-400 text-xs">No Image</span>}
                     </div>
-                    <div className="flex items-center gap-2 mb-3 mt-auto">
-                      <span className="text-sm font-bold text-gray-900">₹{sellingPrice}</span>
-                      {originalPrice > sellingPrice && <span className="text-xs text-gray-400 line-through">₹{originalPrice}</span>}
+                    <div className="grow flex flex-col justify-between">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-800 line-clamp-2 mb-1">{productName}</h3>
+                        <p className="text-xs text-gray-500 mb-2 truncate">{product?.brand || "General"}</p>
+                      </div>
+                      <div className="flex items-center gap-2 mb-3 mt-auto">
+                        <span className="text-sm font-bold text-gray-900">₹{sellingPrice}</span>
+                        {originalPrice > sellingPrice && <span className="text-xs text-gray-400 line-through">₹{originalPrice}</span>}
+                      </div>
                     </div>
+                    <button className="w-full mt-auto bg-green-50 text-green-700 hover:bg-green-600 hover:text-white border border-green-600 font-semibold py-1.5 rounded transition-colors text-sm" onClick={(e) => handleAddToCart(product, e)}> ADD </button>
                   </div>
-                  <button className="w-full mt-auto bg-green-50 text-green-700 hover:bg-green-600 hover:text-white border border-green-600 font-semibold py-1.5 rounded transition-colors text-sm" onClick={(e) => handleAddToCart(product, e)}> ADD </button>
+                )})}
+              </div>
+
+              {/* --- PAGINATION CONTROLS --- */}
+              {totalPages > 1 && (
+                <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                  <p className="text-xs md:text-sm text-gray-500 font-medium">
+                    Showing <span className="font-bold text-gray-800">{indexOfFirstProduct + 1}</span> to <span className="font-bold text-gray-800">{Math.min(indexOfLastProduct, products.length)}</span> of <span className="font-bold text-gray-800">{products.length}</span> products
+                  </p>
+                  <div className="flex items-center gap-1.5 flex-wrap justify-center">
+                    <button 
+                      disabled={currentPage === 1}
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    >
+                      Previous
+                    </button>
+
+                    {getPageNumbers().map((page, idx) => (
+                      typeof page === 'number' ? (
+                        <button
+                          key={idx}
+                          onClick={() => handlePageChange(page)}
+                          className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                            currentPage === page
+                              ? "bg-green-600 text-white shadow-md shadow-green-200"
+                              : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-100"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      ) : (
+                        <span key={idx} className="px-2 text-xs font-bold text-gray-400 select-none">
+                          {page}
+                        </span>
+                      )
+                    ))}
+
+                    <button 
+                      disabled={currentPage === totalPages}
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
-              )})}
-            </div>
+              )}
+            </>
           )}
         </div>
       </div>

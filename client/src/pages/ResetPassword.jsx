@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { toast } from 'react-hot-toast'
 import Axios from '../utils/Axios'
+import SummaryApi from '../common/SummaryApi';
 import { IoEyeOutline, IoEyeOffOutline, IoArrowBack } from "react-icons/io5"; 
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -43,8 +44,7 @@ const ResetPassword = () => {
 
     try {
       const response = await Axios({
-        method: 'put', 
-        url: "https://flash-mart-neon.vercel.app/api/user/reset-password", 
+        ...SummaryApi.resetPassword, 
         data: data 
       })
 

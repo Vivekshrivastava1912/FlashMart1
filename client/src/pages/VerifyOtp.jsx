@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { toast } from 'react-hot-toast'
 import Axios from '../utils/Axios'
+import SummaryApi from '../common/SummaryApi';
 import { IoArrowBack } from "react-icons/io5"; 
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -40,8 +41,7 @@ const VerifyOtp = () => {
 
     try {
       const response = await Axios({
-        method: 'put', 
-        url: "https://flash-mart-neon.vercel.app/api/user/verify-forgot-password-otp", 
+        ...SummaryApi.verifyForgotPasswordOtp,
         data: {
             otp: fullOtp,
             email: location?.state?.email
