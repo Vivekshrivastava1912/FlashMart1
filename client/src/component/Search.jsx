@@ -11,6 +11,8 @@ const Search = () => {
   const location = useLocation();
   const [isMobile] = useMobile(); 
 
+  const [isFocused, setIsFocused] = useState(false);
+
   const isSearchPage = location.pathname === "/Search";
 
   // URL me jo search query hai usko input me set karne ke liye
@@ -61,6 +63,8 @@ const Search = () => {
           value={searchTerm}
           onChange={handleSearchChange} // Yaha change kiya hai
           onClick={handleSearchRedirect} 
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           placeholder=""
           className='w-full h-9 lg:h-11 px-4 md:px-6 pr-14 rounded-full border-none bg-gray-100 text-gray-700 outline-none 
                      font-medium
@@ -70,7 +74,7 @@ const Search = () => {
         />
 
         {/* Animated Placeholder Layer */}
-        {searchTerm === "" && (
+        {!isFocused && searchTerm === "" && (
           <div className='absolute top-0 left-0 h-full flex items-center pl-4 md:pl-6 pointer-events-none text-gray-400 font-medium w-full overflow-hidden z-20'>
             <TypeAnimation
               sequence={[
@@ -86,6 +90,7 @@ const Search = () => {
               wrapper="span"
               speed={30}
               repeat={Infinity}
+              cursor={false}
               style={{ fontSize: '1rem', display: 'inline-block' }}
             />
           </div>
